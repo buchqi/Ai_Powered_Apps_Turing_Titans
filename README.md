@@ -200,10 +200,8 @@ npm run dev
 
 ## 📌 Notes
 
-This project is developed as part of the **CS-AI-2025** course at Kutaisi International University.
+This project is developed as part of the **CS-AI-2026** course at Kutaisi International University.
 
 ---
 
-## 📄 License
 
-This project is for educational purposes.

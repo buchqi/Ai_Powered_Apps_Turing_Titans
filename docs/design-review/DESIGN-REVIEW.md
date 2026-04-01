@@ -4,9 +4,9 @@
 **Assessment:** Design Review — 10 points  
 **Due:** Thursday 2 April 2026 at 23:59 Georgia Time  
 **Submission:** Team repo + Google Form  
-**Team:** [team name]  
+**Team:** Turing Titans  
 **Project:** Film Adviser — AI-Powered Movie Recommendations for Couples  
-**Repo:** [GitHub URL]
+**Repo:** https://github.com/buchqi/Ai_Powered_Apps_Turing_Titans.git
 
 ---
 
@@ -118,12 +118,11 @@ _"Not sure about this one — you can skip"_
 
 ## Section 6 — Team Roles and Contract
 
-| Name       | Primary role               |
-| ---------- | -------------------------- |
-| [Member 1] | Frontend / UI              |
-| [Member 2] | Backend / AI Integration   |
-| [Member 3] | Database / Data Governance |
-| [Member 4] | QA / Documentation         |
+| Name                | Primary role               |
+| ----------          | -------------------------- |
+| Gela Lomidze        | Frontend / UI              |
+| Giorgi Tkebuchava   | Backend / AI Integration   |
+| Ivane Urjumelashvili| Database / Data Governance |
 
 **Team Contract:** Committed to repo root as `TEAM-CONTRACT.md`  
 Link: [GitHub URL to TEAM-CONTRACT.md]

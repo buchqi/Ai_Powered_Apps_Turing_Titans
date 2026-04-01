@@ -125,7 +125,7 @@ _"Not sure about this one — you can skip"_
 | Ivane Urjumelashvili| Database / Data Governance |
 
 **Team Contract:** Committed to repo root as `TEAM-CONTRACT.md`  
-Link: [GitHub URL to TEAM-CONTRACT.md]
+Link: https://github.com/buchqi/Ai_Powered_Apps_Turing_Titans/blob/main/TEAM-CONTRACT.md
 
 ---
 

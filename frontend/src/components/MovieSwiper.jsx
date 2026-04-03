@@ -42,44 +42,22 @@ const MovieSwiper = () => {
     nextMovie();
   };
 
-  const handleDislike = (movie) => {
+  const handleDislike = () => {
     nextMovie();
   };
 
   const currentMovie = movies[currentIndex];
 
   return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="flex flex-col items-center gap-6 rounded-2xl border border-white/10 bg-black/30 p-6 backdrop-blur-md shadow-2xl">
-
+    <div className="flex min-h-screen w-full items-center justify-center bg-zinc-950 px-4 py-8">
+      <div className="rounded-[28px] border border-white/10 bg-black/20 p-4 shadow-2xl backdrop-blur-md">
         {currentMovie ? (
-          <>
-            <MovieCard
-              key={currentMovie.id}
-              movie={currentMovie}
-              onLike={handleLike}
-              onDislike={handleDislike}
-            />
-
-            {/* ✅ Action Buttons */}
-            <div className="flex items-center gap-6">
-              {/* Dislike */}
-              <button
-                onClick={() => handleDislike(currentMovie)}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/20 text-red-400 shadow-lg ring-1 ring-red-400/30 hover:scale-110 hover:bg-red-500/30 transition"
-              >
-                ✕
-              </button>
-
-              {/* Like */}
-              <button
-                onClick={() => handleLike(currentMovie)}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 text-green-400 shadow-lg ring-1 ring-green-400/30 hover:scale-110 hover:bg-green-500/30 transition"
-              >
-                ♥
-              </button>
-            </div>
-          </>
+          <MovieCard
+            key={currentMovie.id}
+            movie={currentMovie}
+            onLike={handleLike}
+            onDislike={handleDislike}
+          />
         ) : (
           <div className="px-6 py-10 text-lg font-semibold text-slate-400">
             No more movies

@@ -60,7 +60,7 @@ const MovieCard = ({ movie, onLike, onDislike }) => {
 
   return (
     <div
-      className="relative h-[520px] w-[min(380px,92vw)] select-none rounded-[18px] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]"
+      className="relative h-[520px] w-[min(380px,92vw)] select-none overflow-hidden rounded-[24px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]"
       style={{
         transform: `translateX(${position.x}px) rotate(${rotation}deg)`,
         transition:
@@ -74,7 +74,6 @@ const MovieCard = ({ movie, onLike, onDislike }) => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      {/* Poster */}
       <img
         src={movie.poster}
         alt={movie.title}
@@ -82,55 +81,20 @@ const MovieCard = ({ movie, onLike, onDislike }) => {
         draggable={false}
       />
 
-      {/* Gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-
-      {/* LIKE / NOPE overlay */}
       {position.x > 20 && !exiting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-green-500/25 text-4xl font-bold text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-green-500/20 text-4xl font-bold tracking-[0.35em] text-white">
           LIKE
         </div>
       )}
 
       {position.x < -20 && !exiting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-red-500/25 text-4xl font-bold text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-red-500/20 text-4xl font-bold tracking-[0.35em] text-white">
           NOPE
         </div>
       )}
 
-      {/* Action Buttons (ONLY PLACE) */}
-      <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-10 z-20">
-        
-        <button
-          onClick={() => triggerSwipe('left')}
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/90 text-white text-2xl shadow-lg active:scale-95 transition"
-        >
-          👎
-        </button>
-
-        <button
-          onClick={() => triggerSwipe('right')}
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/90 text-white text-2xl shadow-lg active:scale-95 transition"
-        >
-          👍
-        </button>
-
-      </div>
-
-      {/* Bottom Content */}
-      <div className="absolute inset-x-0 bottom-0 z-10 p-6 text-white">
-        <h2 className="text-2xl font-bold">{movie.title}</h2>
-
-        <div className="mt-1 flex items-center gap-3 text-sm text-zinc-300">
-          <span>{movie.year}</span>
-          {movie.rating && (
-            <span className="text-amber-400">
-              ★ {movie.rating.toFixed(1)}
-            </span>
-          )}
-        </div>
-
-        <p className="mt-3 text-sm text-zinc-200 line-clamp-3">
+      <div className="absolute inset-x-0 bottom-0 z-10 flex min-h-[140px] items-end px-6 pb-5 sm:min-h-[160px] sm:px-8 sm:pb-6">
+        <p className="text-sm leading-relaxed text-white sm:text-base">
           {movie.description}
         </p>
       </div>

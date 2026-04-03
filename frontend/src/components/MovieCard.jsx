@@ -1,105 +1,142 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-const MovieCard = ({ movie, onLike, onDislike }) => {
-  if (!movie) return null;
+const SWIPE_THRESHOLD = 70;
+const EXIT_DISTANCE = 420;
 
-  const [position, setPosition] = useState({ x: 0 });
+function MovieCard({ movie, onSwipe, onLike, onDislike }) {
+  const [offsetX, setOffsetX] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [exiting, setExiting] = useState(false);
-
   const startX = useRef(0);
-  const currentX = useRef(0);
+  const activePointerId = useRef(null);
 
-  const threshold = 100;
+  const resetCard = () => {
+    setDragging(false);
+    setOffsetX(0);
+    activePointerId.current = null;
+  };
 
-  const handleMouseDown = (e) => {
+  const handlePointerDown = (event) => {
     if (exiting) return;
+
+    startX.current = event.clientX;
+    activePointerId.current = event.pointerId;
     setDragging(true);
-    startX.current = e.clientX;
+    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const handleMouseMove = (e) => {
-    if (!dragging || exiting) return;
+  const handlePointerMove = (event) => {
+    if (!dragging || exiting || activePointerId.current !== event.pointerId) return;
 
-    currentX.current = e.clientX;
-    const deltaX = currentX.current - startX.current;
-
-    setPosition({ x: deltaX });
+    setOffsetX(event.clientX - startX.current);
   };
 
-  const handleMouseUp = () => {
-    if (!dragging || exiting) return;
+  const commitSwipe = (action) => {
+    if (exiting) return;
+
+    const direction = action === 'like' ? 1 : -1;
 
     setDragging(false);
-
-    const deltaX = currentX.current - startX.current;
-
-    if (deltaX > threshold) {
-      triggerSwipe('right');
-    } else if (deltaX < -threshold) {
-      triggerSwipe('left');
-    } else {
-      setPosition({ x: 0 });
-    }
-  };
-
-  const triggerSwipe = (direction) => {
     setExiting(true);
+    setOffsetX(direction * EXIT_DISTANCE);
 
-    setPosition({
-      x: direction === 'right' ? 300 : -300,
-    });
-
-    setTimeout(() => {
-      if (direction === 'right') onLike(movie);
-      else onDislike(movie);
-    }, 200);
+    window.setTimeout(() => {
+      onSwipe(action);
+      setExiting(false);
+      setOffsetX(0);
+      activePointerId.current = null;
+    }, 260);
   };
 
-  const rotation = position.x / 20;
+  const handlePointerUp = (event) => {
+    if (!dragging || activePointerId.current !== event.pointerId) return;
+
+    const movedX = event.clientX - startX.current;
+
+    if (movedX >= SWIPE_THRESHOLD) {
+      commitSwipe('like');
+      return;
+    }
+
+    if (movedX <= -SWIPE_THRESHOLD) {
+      commitSwipe('dislike');
+      return;
+    }
+
+    resetCard();
+  };
+
+  const handleButtonSwipe = (event, action) => {
+    event.preventDefault();
+    event.stopPropagation();
+    commitSwipe(action);
+  };
+
+  const rotation = offsetX / 12;
 
   return (
-    <div
-      className="relative h-[520px] w-[min(380px,92vw)] select-none overflow-hidden rounded-[24px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]"
+    <article
+      className="movie-card"
       style={{
-        transform: `translateX(${position.x}px) rotate(${rotation}deg)`,
-        transition:
-          dragging || exiting
-            ? 'none'
-            : 'transform 0.25s ease-out, opacity 0.25s ease-out',
+        transform: `translateX(${offsetX}px) rotate(${rotation}deg)`,
+        transition: dragging ? 'none' : 'transform 260ms ease, opacity 260ms ease',
         opacity: exiting ? 0 : 1,
       }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={resetCard}
     >
-      <img
-        src={movie.poster}
-        alt={movie.title}
-        className="absolute inset-0 h-full w-full object-cover"
-        draggable={false}
-      />
+      <img className="movie-card__poster" src={movie.poster} alt={movie.title} draggable={false} />
 
-      {position.x > 20 && !exiting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-green-500/20 text-4xl font-bold tracking-[0.35em] text-white">
-          LIKE
-        </div>
-      )}
-
-      {position.x < -20 && !exiting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-red-500/20 text-4xl font-bold tracking-[0.35em] text-white">
-          NOPE
-        </div>
-      )}
-
-      <div className="absolute inset-x-0 bottom-0 z-10 flex min-h-[140px] items-end px-6 pb-5 sm:min-h-[160px] sm:px-8 sm:pb-6">
-        <p className="text-sm leading-relaxed text-white sm:text-base">
-          {movie.description}
-        </p>
+      <div className="movie-card__badge movie-card__badge--like" style={{ opacity: offsetX > 16 ? 1 : 0 }}>
+        LIKE
       </div>
-    </div>
+      <div
+        className="movie-card__badge movie-card__badge--dislike"
+        style={{ opacity: offsetX < -16 ? 1 : 0 }}
+      >
+        NOPE
+      </div>
+
+      <div className="movie-card__content">
+        <div className="movie-card__content-inner">
+          <div className="movie-card__meta">
+            <h2>{movie.title}</h2>
+            <span>{movie.year}</span>
+          </div>
+          <p>{movie.description}</p>
+        </div>
+      </div>
+
+      <div className="movie-card__actions">
+        <button
+          type="button"
+          className="movie-card__button movie-card__button--dislike"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          onClick={(event) => handleButtonSwipe(event, 'dislike')}
+          aria-label="Dislike movie"
+        >
+          <span aria-hidden="true">Dislike</span>
+        </button>
+        <button
+          type="button"
+          className="movie-card__button movie-card__button--like"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          onClick={(event) => handleButtonSwipe(event, 'like')}
+          aria-label="Like movie"
+        >
+          <span aria-hidden="true">Like</span>
+        </button>
+      </div>
+    </article>
   );
-};
+}
 
 export default MovieCard;

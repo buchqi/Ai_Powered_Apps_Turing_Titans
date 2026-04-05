@@ -1,13 +1,12 @@
-import MovieSwiper from "./components/MovieSwiper.jsx";
-import ContentCard from "./components/ContentCard.jsx";
+import React from 'react';
+import './App.css';
 import Home from "./pages/Home.jsx";
-import "./App.css";
 
 function App() {
   return (
-    <main className="app">
+    <div className="App">
       <Home />
-    </main>
+    </div>
   );
 }
 

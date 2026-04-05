@@ -1,199 +1,92 @@
-import { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 const QUESTIONS = [
-  {
-    id: 'q1',
-    prompt: 'What kind of emotional experience do you want from the movie?',
-    options: [
-      { key: 'A', label: 'Intense and immersive' },
-      { key: 'B', label: 'Light and easy' },
-      { key: 'C', label: 'Thought-provoking' },
-      { key: 'D', label: 'Unpredictable / mind-blowing' },
-    ],
+  { 
+    id: 'pacing', 
+    prompt: 'Preferred Narrative Pacing?', 
+    options: ['Slow Burn (Atmospheric)', 'Steady (Balanced)', 'Breakneck (High Action)'] 
   },
-  {
-    id: 'q2',
-    prompt: 'How much complexity do you enjoy in a movie’s story?',
-    options: [
-      { key: 'A', label: 'Simple and straightforward' },
-      { key: 'B', label: 'Moderate with some twists' },
-      { key: 'C', label: 'Complex with multiple layers' },
-      { key: 'D', label: 'Confusing is okay if rewarding' },
-    ],
+  { 
+    id: 'theme', 
+    prompt: 'Core Story Focus?', 
+    options: ['Technological/Sci-Fi', 'Human Psychology', 'Political/Social Intrigue'] 
   },
-  {
-    id: 'q3',
-    prompt: 'What pacing do you prefer?',
-    options: [
-      { key: 'A', label: 'Fast-paced' },
-      { key: 'B', label: 'Balanced pacing' },
-      { key: 'C', label: 'Slow-paced' },
-      { key: 'D', label: 'No preference' },
-    ],
+  { 
+    id: 'visuals', 
+    prompt: 'Visual Aesthetic?', 
+    options: ['Neon/Cyberpunk', 'Gritty/Realistic', 'Vibrant/Stylized'] 
   },
-  {
-    id: 'q4',
-    prompt: 'How important are plot twists to you?',
-    options: [
-      { key: 'A', label: 'Love frequent twists' },
-      { key: 'B', label: 'Some twists' },
-      { key: 'C', label: 'Prefer predictable' },
-      { key: 'D', label: 'Doesn’t matter' },
-    ],
+  { 
+    id: 'complexity', 
+    prompt: 'Plot Complexity?', 
+    options: ['Linear (Straightforward)', 'Non-Linear (Twisty)', 'Abstract (Open to Interpretation)'] 
   },
-  {
-    id: 'q5',
-    prompt: 'Which matters more to you?',
-    options: [
-      { key: 'A', label: 'Story / plot' },
-      { key: 'B', label: 'Characters / acting' },
-      { key: 'C', label: 'Visuals / cinematography' },
-      { key: 'D', label: 'Overall vibe / atmosphere' },
-    ],
-  },
+  { 
+    id: 'tone', 
+    prompt: 'Emotional Resonance?', 
+    options: ['Cynical/Dark', 'Hopeful/Inspiring', 'Melancholic/Bittersweet'] 
+  }
 ];
 
-function ContentCard({ user = 'A', userId, onComplete }) {
-  const userLabel = userId ?? user;
-  const [currentIndex, setCurrentIndex] = useState(0);
+function ContentCard({ user = 'A' }) {
+  const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [result, setResult] = useState(null);
+  const [done, setDone] = useState(false);
 
-  const currentQuestion = QUESTIONS[currentIndex];
-  const selectedAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
-  const progressPercent = ((currentIndex + 1) / QUESTIONS.length) * 100;
+  const handleSelection = (option) => {
+    const currentQuestion = QUESTIONS[idx];
+    setAnswers({ ...answers, [currentQuestion.id]: option });
 
-  const summary = useMemo(
-    () => ({
-      user: userLabel,
-      answers,
-    }),
-    [answers, userLabel],
+    if (idx < QUESTIONS.length - 1) {
+      setIdx(idx + 1);
+    } else {
+      setDone(true);
+      console.log(`User ${user} Profile Complete:`, answers);
+    }
+  };
+
+  if (done) return (
+    <div className="content-card" style={{ border: '1px solid var(--accent)', boxShadow: '0 0 15px rgba(56, 189, 248, 0.2)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '2rem', marginBottom: '10px' }}>✓</div>
+        <h3 style={{ color: 'var(--accent)', margin: 0 }}>User {user} Profile Locked</h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+          AI is now prioritizing {answers.theme} and {answers.pacing} narratives.
+        </p>
+      </div>
+    </div>
   );
 
-  const submitAnswers = (nextAnswers) => {
-    const detailedAnswers = QUESTIONS.reduce((accumulator, question) => {
-      const selectedKey = nextAnswers[question.id];
-      const selectedOption = question.options.find((option) => option.key === selectedKey);
-
-      accumulator[question.id] = {
-        question: question.prompt,
-        answer: selectedOption?.label ?? '',
-      };
-
-      return accumulator;
-    }, {});
-
-    const payload = {
-      user: userLabel,
-      answers: detailedAnswers,
-    };
-
-    console.log(payload);
-    setResult(payload);
-    setIsSubmitted(true);
-    onComplete?.(payload);
-  };
-
-  const handleSelect = (optionKey) => {
-    if (!currentQuestion) return;
-
-    const nextAnswers = {
-      ...answers,
-      [currentQuestion.id]: optionKey,
-    };
-
-    setAnswers(nextAnswers);
-
-    if (currentIndex === QUESTIONS.length - 1) {
-      submitAnswers(nextAnswers);
-      return;
-    }
-
-    window.setTimeout(() => {
-      setCurrentIndex((index) => index + 1);
-    }, 180);
-  };
-
-  const handleBack = () => {
-    if (isSubmitted) {
-      setIsSubmitted(false);
-      setCurrentIndex(QUESTIONS.length - 1);
-      return;
-    }
-
-    if (currentIndex === 0) return;
-    setCurrentIndex((index) => index - 1);
-  };
-
-  if (isSubmitted && result) {
-    return (
-      <section className="content-card" aria-live="polite">
-        <div className="content-card__header">
-          <span className="content-card__eyebrow">User {userLabel}</span>
-          <h2>Preferences Saved</h2>
-          <p>Your movie preferences are saved. AI can now use them to find better recommendations for you.</p>
-        </div>
-
-        <div className="content-card__footer">
-          <button type="button" className="content-card__nav-button" onClick={handleBack}>
-            Back
-          </button>
-          <p className="content-card__hint">Your detailed answers were printed to the console for now.</p>
-        </div>
-      </section>
-    );
-  }
+  const progress = ((idx + 1) / QUESTIONS.length) * 100;
 
   return (
-    <section className="content-card" aria-live="polite">
-      <div className="content-card__header">
-        <span className="content-card__eyebrow">User {userLabel}</span>
-        <div className="content-card__progress-row">
-          <p>
-            Question {currentIndex + 1}/{QUESTIONS.length}
-          </p>
-          <span>{Math.round(progressPercent)}%</span>
-        </div>
-        <div className="content-card__progress" aria-hidden="true">
-          <span style={{ width: `${progressPercent}%` }} />
-        </div>
+    <div className="content-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <span style={{ color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.75rem', letterSpacing: '1px' }}>
+          USER {user} DATA ENTRY
+        </span>
+        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{idx + 1} / {QUESTIONS.length}</span>
       </div>
 
-      <div className="content-card__body" key={currentQuestion.id}>
-        <h2>{currentQuestion.prompt}</h2>
-        <div className="content-card__options">
-          {currentQuestion.options.map((option) => {
-            const isActive = selectedAnswer === option.key;
-
-            return (
-              <button
-                key={option.key}
-                type="button"
-                className={`content-card__option${isActive ? ' is-active' : ''}`}
-                onClick={() => handleSelect(option.key)}
-              >
-                <span className="content-card__option-key">{option.key}</span>
-                <span>{option.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* Progress Bar */}
+      <div style={{ width: '100%', height: '2px', background: 'rgba(255,255,255,0.1)', marginBottom: '1.5rem' }}>
+        <div style={{ width: `${progress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }} />
       </div>
 
-      <div className="content-card__footer">
-        <button
-          type="button"
-          className="content-card__nav-button"
-          onClick={handleBack}
-          disabled={currentIndex === 0}
-        >
-          Back
-        </button>
-        <p className="content-card__hint">Selecting an option automatically moves to the next question.</p>
+      <h2 style={{ fontSize: '1.1rem', margin: '0 0 1.5rem 0', lineHeight: '1.4' }}>{QUESTIONS[idx].prompt}</h2>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {QUESTIONS[idx].options.map(opt => (
+          <button 
+            key={opt} 
+            className="content-card__option"
+            onClick={() => handleSelection(opt)}
+          >
+            {opt}
+          </button>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
 

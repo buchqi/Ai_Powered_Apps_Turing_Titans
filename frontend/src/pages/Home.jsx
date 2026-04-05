@@ -6,27 +6,22 @@ const Home = () => {
   return (
     <section className="home-page">
       <header className="home-page__hero">
-        <span className="home-page__eyebrow">AI Movie Matchmaker</span>
-
-        <p>
-          Each person answers a short AI-style preference flow, then you meet in
-          the middle with a swipe deck built for couples instead of endless
-          scrolling.
-        </p>
+        <h1 className="home-page__title">AI Movie Matchmaker</h1>
+        <p style={{ color: 'var(--text-muted)' }}>Turing Titans: Find your perfect movie match.</p>
       </header>
 
       <div className="home-page__shell">
-        <div className="home-page__column">
+        <aside className="home-page__column">
           <ContentCard user="A" />
-        </div>
+        </aside>
 
-        <div className="home-page__column home-page__column--center">
+        <main className="home-page__column home-page__column--center">
           <MovieSwiper />
-        </div>
+        </main>
 
-        <div className="home-page__column">
+        <aside className="home-page__column">
           <ContentCard user="B" />
-        </div>
+        </aside>
       </div>
     </section>
   );

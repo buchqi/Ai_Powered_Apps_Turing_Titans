@@ -1,36 +1,58 @@
 import React from 'react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 function MovieCard({ movie, onSwipe }) {
-  if (!movie) return null;
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 200], [-8, 8]);
+  const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
+
+  const handleDragEnd = (event, info) => {
+    if (info.offset.x > 100) onSwipe('like');
+    else if (info.offset.x < -100) onSwipe('dislike');
+  };
 
   return (
-    <article className="movie-card">
-      <img 
-        className="movie-card__poster" 
-        src={movie.poster} 
-        alt={movie.title} 
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-      />
+    <motion.article 
+      className="movie-card"
+      style={{ x, rotate, opacity }}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      onDragEnd={handleDragEnd}
+      whileDrag={{ cursor: "grabbing" }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+    >
+      <img className="movie-card__poster" src={movie.poster} alt={movie.title} />
 
       <div className="movie-card__content">
-        <h2 style={{ margin: 0, fontSize: '1.5rem' }}>{movie.title}</h2>
-        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{movie.year} • {movie.genres?.join(', ')}</p>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+        <div className="ai-reason-badge">
+          ✧ High Fairness: 98%
+        </div>
+        
+        <h2>{movie.title}</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: '1.4' }}>
+          {movie.year} • {movie.genres?.join(' / ')} <br/>
+          <span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.6)' }}>
+            "Matches your interest in deep psychology and partner B's love for slow-burns."
+          </span>
+        </p>
+        
+        <div style={{ display: 'flex', gap: '15px' }}>
           <button 
             onClick={() => onSwipe('dislike')}
-            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #ef4444', background: 'transparent', color: '#ef4444', cursor: 'pointer' }}
+            style={{ flex: 1, padding: '14px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'white', cursor: 'pointer', transition: '0.2s' }}
           >
-            Nope
+            Skip
           </button>
           <button 
             onClick={() => onSwipe('like')}
-            style={{ flex: 1, padding: '10px', borderRadius: '8px', background: '#38bdf8', border: 'none', color: 'white', cursor: 'pointer' }}
+            style={{ flex: 1, padding: '14px', borderRadius: '14px', background: 'var(--accent-red)', border: 'none', color: 'white', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            Like
+            I'd Watch This
           </button>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 

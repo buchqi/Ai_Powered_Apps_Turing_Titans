@@ -1,0 +1,502 @@
+[
+  {
+    "id": "1",
+    "title": "Inception",
+    "year": 2010,
+    "genres": ["Sci-Fi", "Thriller", "Action"],
+    "description": "A skilled thief enters people's dreams to steal secrets, but one final mission forces him to question reality itself.",
+    "duration": 148,
+    "rating": 8.8,
+    "poster_url": "https://example.com/posters/inception.jpg"
+  },
+  {
+    "id": "2",
+    "title": "Interstellar",
+    "year": 2014,
+    "genres": ["Sci-Fi", "Drama", "Adventure"],
+    "description": "A former pilot joins a space mission to find a new home for humanity while struggling with time, family, and sacrifice.",
+    "duration": 169,
+    "rating": 8.7,
+    "poster_url": "https://example.com/posters/interstellar.jpg"
+  },
+  {
+    "id": "3",
+    "title": "The Dark Knight",
+    "year": 2008,
+    "genres": ["Action", "Crime", "Drama"],
+    "description": "Batman faces a chaotic criminal mastermind who pushes Gotham and its heroes into moral collapse.",
+    "duration": 152,
+    "rating": 9.0,
+    "poster_url": "https://example.com/posters/the-dark-knight.jpg"
+  },
+  {
+    "id": "4",
+    "title": "Shutter Island",
+    "year": 2010,
+    "genres": ["Mystery", "Thriller", "Psychological"],
+    "description": "A detective investigates a disappearance at a remote mental hospital, uncovering disturbing secrets about the island and himself.",
+    "duration": 138,
+    "rating": 8.2,
+    "poster_url": "https://example.com/posters/shutter-island.jpg"
+  },
+  {
+    "id": "5",
+    "title": "The Prestige",
+    "year": 2006,
+    "genres": ["Mystery", "Drama", "Sci-Fi"],
+    "description": "Two rival magicians become obsessed with outperforming each other, leading to dangerous secrets and sacrifice.",
+    "duration": 130,
+    "rating": 8.5,
+    "poster_url": "https://example.com/posters/the-prestige.jpg"
+  },
+  {
+    "id": "6",
+    "title": "Prisoners",
+    "year": 2013,
+    "genres": ["Crime", "Drama", "Thriller"],
+    "description": "After two girls disappear, a desperate father and a determined detective follow very different paths to the truth.",
+    "duration": 153,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/prisoners.jpg"
+  },
+  {
+    "id": "7",
+    "title": "Gone Girl",
+    "year": 2014,
+    "genres": ["Thriller", "Mystery", "Drama"],
+    "description": "A woman's disappearance turns into a media storm as her husband becomes the main suspect in a twisted psychological case.",
+    "duration": 149,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/gone-girl.jpg"
+  },
+  {
+    "id": "8",
+    "title": "Fight Club",
+    "year": 1999,
+    "genres": ["Drama", "Psychological", "Thriller"],
+    "description": "An unhappy office worker forms an underground fight club that grows into something far more dangerous and unstable.",
+    "duration": 139,
+    "rating": 8.8,
+    "poster_url": "https://example.com/posters/fight-club.jpg"
+  },
+  {
+    "id": "9",
+    "title": "Parasite",
+    "year": 2019,
+    "genres": ["Thriller", "Drama", "Dark Comedy"],
+    "description": "A poor family infiltrates a wealthy household, creating a tense and unpredictable clash between social classes.",
+    "duration": 132,
+    "rating": 8.5,
+    "poster_url": "https://example.com/posters/parasite.jpg"
+  },
+  {
+    "id": "10",
+    "title": "Whiplash",
+    "year": 2014,
+    "genres": ["Drama", "Music"],
+    "description": "An ambitious young drummer faces extreme pressure from a ruthless instructor who pushes him toward greatness and destruction.",
+    "duration": 106,
+    "rating": 8.5,
+    "poster_url": "https://example.com/posters/whiplash.jpg"
+  },
+  {
+    "id": "11",
+    "title": "The Matrix",
+    "year": 1999,
+    "genres": ["Sci-Fi", "Action"],
+    "description": "A hacker discovers that reality is a simulated world controlled by machines and joins a rebellion to fight back.",
+    "duration": 136,
+    "rating": 8.7,
+    "poster_url": "https://example.com/posters/the-matrix.jpg"
+  },
+  {
+    "id": "12",
+    "title": "Blade Runner 2049",
+    "year": 2017,
+    "genres": ["Sci-Fi", "Drama", "Mystery"],
+    "description": "A synthetic officer uncovers a secret that could change the balance between humans and artificial beings.",
+    "duration": 164,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/blade-runner-2049.jpg"
+  },
+  {
+    "id": "13",
+    "title": "Arrival",
+    "year": 2016,
+    "genres": ["Sci-Fi", "Drama", "Mystery"],
+    "description": "A linguist tries to communicate with alien visitors while confronting time, memory, and personal loss.",
+    "duration": 116,
+    "rating": 7.9,
+    "poster_url": "https://example.com/posters/arrival.jpg"
+  },
+  {
+    "id": "14",
+    "title": "Ex Machina",
+    "year": 2014,
+    "genres": ["Sci-Fi", "Thriller", "Drama"],
+    "description": "A programmer is invited to test an advanced humanoid AI, but the experiment becomes manipulative and dangerous.",
+    "duration": 108,
+    "rating": 7.7,
+    "poster_url": "https://example.com/posters/ex-machina.jpg"
+  },
+  {
+    "id": "15",
+    "title": "Her",
+    "year": 2013,
+    "genres": ["Romance", "Sci-Fi", "Drama"],
+    "description": "A lonely man develops an emotional relationship with an intelligent operating system.",
+    "duration": 126,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/her.jpg"
+  },
+  {
+    "id": "16",
+    "title": "Mad Max: Fury Road",
+    "year": 2015,
+    "genres": ["Action", "Adventure", "Sci-Fi"],
+    "description": "In a brutal desert wasteland, rebels flee a tyrant in a relentless high-speed chase.",
+    "duration": 120,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/mad-max-fury-road.jpg"
+  },
+  {
+    "id": "17",
+    "title": "John Wick",
+    "year": 2014,
+    "genres": ["Action", "Crime", "Thriller"],
+    "description": "A retired assassin returns to the criminal underworld after a personal loss triggers his revenge.",
+    "duration": 101,
+    "rating": 7.4,
+    "poster_url": "https://example.com/posters/john-wick.jpg"
+  },
+  {
+    "id": "18",
+    "title": "The Social Network",
+    "year": 2010,
+    "genres": ["Drama", "Biography"],
+    "description": "A brilliant student builds a social media empire while friendships, ambition, and lawsuits collide.",
+    "duration": 120,
+    "rating": 7.8,
+    "poster_url": "https://example.com/posters/the-social-network.jpg"
+  },
+  {
+    "id": "19",
+    "title": "Moneyball",
+    "year": 2011,
+    "genres": ["Drama", "Sport", "Biography"],
+    "description": "A baseball manager uses data and unconventional thinking to challenge a broken system.",
+    "duration": 133,
+    "rating": 7.6,
+    "poster_url": "https://example.com/posters/moneyball.jpg"
+  },
+  {
+    "id": "20",
+    "title": "The Imitation Game",
+    "year": 2014,
+    "genres": ["Biography", "Drama", "War"],
+    "description": "A mathematician works to crack an enemy code during wartime while hiding parts of his personal life.",
+    "duration": 114,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/the-imitation-game.jpg"
+  },
+  {
+    "id": "21",
+    "title": "The Grand Budapest Hotel",
+    "year": 2014,
+    "genres": ["Comedy", "Adventure", "Drama"],
+    "description": "A hotel concierge and a young lobby boy get pulled into a stylish adventure involving theft, loyalty, and chaos.",
+    "duration": 99,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/the-grand-budapest-hotel.jpg"
+  },
+  {
+    "id": "22",
+    "title": "Knives Out",
+    "year": 2019,
+    "genres": ["Mystery", "Comedy", "Crime"],
+    "description": "A detective investigates a wealthy family's secrets after the suspicious death of a famous author.",
+    "duration": 130,
+    "rating": 7.9,
+    "poster_url": "https://example.com/posters/knives-out.jpg"
+  },
+  {
+    "id": "23",
+    "title": "Get Out",
+    "year": 2017,
+    "genres": ["Horror", "Thriller", "Mystery"],
+    "description": "A young man visits his girlfriend's family and slowly realizes their hospitality hides something horrifying.",
+    "duration": 104,
+    "rating": 7.8,
+    "poster_url": "https://example.com/posters/get-out.jpg"
+  },
+  {
+    "id": "24",
+    "title": "A Quiet Place",
+    "year": 2018,
+    "genres": ["Horror", "Drama", "Sci-Fi"],
+    "description": "A family survives in silence in a world where creatures hunt by sound.",
+    "duration": 90,
+    "rating": 7.5,
+    "poster_url": "https://example.com/posters/a-quiet-place.jpg"
+  },
+  {
+    "id": "25",
+    "title": "The Conjuring",
+    "year": 2013,
+    "genres": ["Horror", "Mystery", "Thriller"],
+    "description": "Paranormal investigators help a family facing terrifying events inside a haunted farmhouse.",
+    "duration": 112,
+    "rating": 7.5,
+    "poster_url": "https://example.com/posters/the-conjuring.jpg"
+  },
+  {
+    "id": "26",
+    "title": "La La Land",
+    "year": 2016,
+    "genres": ["Romance", "Drama", "Music"],
+    "description": "An aspiring actress and a jazz musician fall in love while chasing dreams that may pull them apart.",
+    "duration": 128,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/la-la-land.jpg"
+  },
+  {
+    "id": "27",
+    "title": "The Notebook",
+    "year": 2004,
+    "genres": ["Romance", "Drama"],
+    "description": "A passionate love story follows two people separated by class, time, and difficult choices.",
+    "duration": 123,
+    "rating": 7.8,
+    "poster_url": "https://example.com/posters/the-notebook.jpg"
+  },
+  {
+    "id": "28",
+    "title": "Before Sunrise",
+    "year": 1995,
+    "genres": ["Romance", "Drama"],
+    "description": "Two strangers meet on a train and spend one night walking through Vienna, talking about life and love.",
+    "duration": 101,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/before-sunrise.jpg"
+  },
+  {
+    "id": "29",
+    "title": "The Wolf of Wall Street",
+    "year": 2013,
+    "genres": ["Biography", "Comedy", "Crime"],
+    "description": "A stockbroker rises through greed, excess, and fraud before his empire begins to collapse.",
+    "duration": 180,
+    "rating": 8.2,
+    "poster_url": "https://example.com/posters/the-wolf-of-wall-street.jpg"
+  },
+  {
+    "id": "30",
+    "title": "The Big Short",
+    "year": 2015,
+    "genres": ["Drama", "Comedy", "Biography"],
+    "description": "A group of outsiders notices the hidden weakness in the housing market before a financial disaster.",
+    "duration": 130,
+    "rating": 7.8,
+    "poster_url": "https://example.com/posters/the-big-short.jpg"
+  },
+  {
+    "id": "31",
+    "title": "Django Unchained",
+    "year": 2012,
+    "genres": ["Western", "Drama", "Action"],
+    "description": "A freed man teams up with a bounty hunter to rescue his wife from a cruel plantation owner.",
+    "duration": 165,
+    "rating": 8.5,
+    "poster_url": "https://example.com/posters/django-unchained.jpg"
+  },
+  {
+    "id": "32",
+    "title": "The Revenant",
+    "year": 2015,
+    "genres": ["Adventure", "Drama", "Thriller"],
+    "description": "A frontiersman fights through brutal wilderness after betrayal leaves him near death.",
+    "duration": 156,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/the-revenant.jpg"
+  },
+  {
+    "id": "33",
+    "title": "Gladiator",
+    "year": 2000,
+    "genres": ["Action", "Drama", "Adventure"],
+    "description": "A betrayed Roman general becomes a gladiator and seeks justice against the emperor who destroyed his life.",
+    "duration": 155,
+    "rating": 8.5,
+    "poster_url": "https://example.com/posters/gladiator.jpg"
+  },
+  {
+    "id": "34",
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "year": 2001,
+    "genres": ["Fantasy", "Adventure", "Drama"],
+    "description": "A young hobbit begins a dangerous journey to destroy a powerful ring before darkness takes over the world.",
+    "duration": 178,
+    "rating": 8.9,
+    "poster_url": "https://example.com/posters/lotr-fellowship.jpg"
+  },
+  {
+    "id": "35",
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "year": 2001,
+    "genres": ["Fantasy", "Adventure", "Family"],
+    "description": "A boy discovers he is a wizard and enters a magical school filled with friendship, mystery, and danger.",
+    "duration": 152,
+    "rating": 7.6,
+    "poster_url": "https://example.com/posters/harry-potter-1.jpg"
+  },
+  {
+    "id": "36",
+    "title": "Spider-Man: Into the Spider-Verse",
+    "year": 2018,
+    "genres": ["Animation", "Action", "Adventure"],
+    "description": "A teenager becomes Spider-Man and meets heroes from other dimensions while learning what makes him unique.",
+    "duration": 117,
+    "rating": 8.4,
+    "poster_url": "https://example.com/posters/spider-verse.jpg"
+  },
+  {
+    "id": "37",
+    "title": "Coco",
+    "year": 2017,
+    "genres": ["Animation", "Family", "Music"],
+    "description": "A boy enters the Land of the Dead and discovers the truth about his family, music, and memory.",
+    "duration": 105,
+    "rating": 8.4,
+    "poster_url": "https://example.com/posters/coco.jpg"
+  },
+  {
+    "id": "38",
+    "title": "Inside Out",
+    "year": 2015,
+    "genres": ["Animation", "Family", "Comedy"],
+    "description": "Inside a young girl's mind, her emotions try to guide her through a major life change.",
+    "duration": 95,
+    "rating": 8.1,
+    "poster_url": "https://example.com/posters/inside-out.jpg"
+  },
+  {
+    "id": "39",
+    "title": "Soul",
+    "year": 2020,
+    "genres": ["Animation", "Drama", "Comedy"],
+    "description": "A music teacher's soul travels beyond life and learns what makes living meaningful.",
+    "duration": 100,
+    "rating": 8.0,
+    "poster_url": "https://example.com/posters/soul.jpg"
+  },
+  {
+    "id": "40",
+    "title": "The Hangover",
+    "year": 2009,
+    "genres": ["Comedy"],
+    "description": "After a wild night in Las Vegas, three friends wake up with no memory and must find the missing groom.",
+    "duration": 100,
+    "rating": 7.7,
+    "poster_url": "https://example.com/posters/the-hangover.jpg"
+  },
+  {
+    "id": "41",
+    "title": "Superbad",
+    "year": 2007,
+    "genres": ["Comedy"],
+    "description": "Two awkward high school friends try to make one final party unforgettable before graduation.",
+    "duration": 113,
+    "rating": 7.6,
+    "poster_url": "https://example.com/posters/superbad.jpg"
+  },
+  {
+    "id": "42",
+    "title": "Forrest Gump",
+    "year": 1994,
+    "genres": ["Drama", "Romance", "Comedy"],
+    "description": "A kind-hearted man experiences major moments in history while holding onto love and simple wisdom.",
+    "duration": 142,
+    "rating": 8.8,
+    "poster_url": "https://example.com/posters/forrest-gump.jpg"
+  },
+  {
+    "id": "43",
+    "title": "The Shawshank Redemption",
+    "year": 1994,
+    "genres": ["Drama"],
+    "description": "A wrongly imprisoned man forms a powerful friendship and holds onto hope across decades behind bars.",
+    "duration": 142,
+    "rating": 9.3,
+    "poster_url": "https://example.com/posters/shawshank.jpg"
+  },
+  {
+    "id": "44",
+    "title": "Good Will Hunting",
+    "year": 1997,
+    "genres": ["Drama", "Romance"],
+    "description": "A brilliant but troubled young man confronts his past with help from a therapist who challenges him emotionally.",
+    "duration": 126,
+    "rating": 8.3,
+    "poster_url": "https://example.com/posters/good-will-hunting.jpg"
+  },
+  {
+    "id": "45",
+    "title": "The Green Mile",
+    "year": 1999,
+    "genres": ["Drama", "Fantasy", "Crime"],
+    "description": "A prison guard encounters a death row inmate with a mysterious gift and a gentle soul.",
+    "duration": 189,
+    "rating": 8.6,
+    "poster_url": "https://example.com/posters/the-green-mile.jpg"
+  },
+  {
+    "id": "46",
+    "title": "Se7en",
+    "year": 1995,
+    "genres": ["Crime", "Thriller", "Mystery"],
+    "description": "Two detectives hunt a serial killer whose crimes are inspired by the seven deadly sins.",
+    "duration": 127,
+    "rating": 8.6,
+    "poster_url": "https://example.com/posters/se7en.jpg"
+  },
+  {
+    "id": "47",
+    "title": "Zodiac",
+    "year": 2007,
+    "genres": ["Crime", "Mystery", "Drama"],
+    "description": "Reporters and investigators become obsessed with identifying a real-life serial killer who taunts the public.",
+    "duration": 157,
+    "rating": 7.7,
+    "poster_url": "https://example.com/posters/zodiac.jpg"
+  },
+  {
+    "id": "48",
+    "title": "Nightcrawler",
+    "year": 2014,
+    "genres": ["Thriller", "Crime", "Drama"],
+    "description": "An ambitious outsider enters the world of crime journalism and becomes increasingly manipulative and disturbing.",
+    "duration": 117,
+    "rating": 7.8,
+    "poster_url": "https://example.com/posters/nightcrawler.jpg"
+  },
+  {
+    "id": "49",
+    "title": "Baby Driver",
+    "year": 2017,
+    "genres": ["Action", "Crime", "Music"],
+    "description": "A young getaway driver uses music to stay focused while trying to escape a dangerous criminal life.",
+    "duration": 113,
+    "rating": 7.5,
+    "poster_url": "https://example.com/posters/baby-driver.jpg"
+  },
+  {
+    "id": "50",
+    "title": "Edge of Tomorrow",
+    "year": 2014,
+    "genres": ["Sci-Fi", "Action", "Adventure"],
+    "description": "A soldier trapped in a time loop repeatedly relives the same battle while learning how to defeat an alien invasion.",
+    "duration": 113,
+    "rating": 7.9,
+    "poster_url": "https://example.com/posters/edge-of-tomorrow.jpg"
+  }
+]

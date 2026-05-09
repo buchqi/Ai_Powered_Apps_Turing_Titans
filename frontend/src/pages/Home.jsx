@@ -1,23 +1,35 @@
 import React, { useState, useEffect } from "react";
 import ContentCard from "../components/ContentCard.jsx";
 import MovieSwiper from "../components/MovieSwiper.jsx";
-import { motion } from "framer-motion";
 
 const Home = () => {
-  const [userAReady, setUserAReady] = useState(false);
-  const [userBReady, setUserBReady] = useState(false);
+  const [prefA, setPrefA] = useState(null);
+  const [prefB, setPrefB] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [movies, setMovies] = useState([]);
 
-  // Bulletproof turn logic
-  const currentTurn = !userAReady ? "A" : (!userBReady ? "B" : "DONE");
+  const currentTurn = !prefA ? "A" : (!prefB ? "B" : "DONE");
 
   useEffect(() => {
-    if (userAReady && userBReady) {
+    if (prefA && prefB) {
       setIsAnalyzing(true);
-      const timer = setTimeout(() => setIsAnalyzing(false), 2000);
-      return () => clearTimeout(timer);
+      
+      fetch("http://localhost:8000/api/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_a: prefA, user_b: prefB })
+      })
+        .then(res => res.json())
+        .then(data => {
+          setMovies(data);
+          setIsAnalyzing(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsAnalyzing(false);
+        });
     }
-  }, [userAReady, userBReady]);
+  }, [prefA, prefB]);
 
   return (
     <section className="home-page">
@@ -31,32 +43,29 @@ const Home = () => {
       </header>
 
       <div className="home-page__shell">
-        {/* Left Column */}
-        <div className="home-page__column" style={{ zIndex: currentTurn === "A" ? 10 : 1 }}>
+        <div className="home-page__column">
           <ContentCard 
             user="A" 
             isActive={currentTurn === "A"}
-            isDone={userAReady}
-            onComplete={() => setUserAReady(true)} 
+            isDone={!!prefA}
+            onComplete={setPrefA} 
           />
         </div>
 
-        {/* Center Column */}
         <div className="home-page__column">
           <MovieSwiper 
-            userAReady={userAReady}
-            userBReady={userBReady}
+            isReady={currentTurn === "DONE"}
             isAnalyzing={isAnalyzing} 
+            movies={movies}
           />
         </div>
 
-        {/* Right Column */}
-        <div className="home-page__column" style={{ zIndex: currentTurn === "B" ? 10 : 1 }}>
+        <div className="home-page__column">
           <ContentCard 
             user="B" 
             isActive={currentTurn === "B"}
-            isDone={userBReady}
-            onComplete={() => setUserBReady(true)} 
+            isDone={!!prefB}
+            onComplete={setPrefB} 
           />
         </div>
       </div>

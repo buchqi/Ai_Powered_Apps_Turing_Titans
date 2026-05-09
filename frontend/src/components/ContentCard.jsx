@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// THE NEW UX-OPTIMIZED "BANG BANG" QUESTION PACK
 const QUESTIONS = [
   { id: 'vibe', prompt: "What's the vibe tonight?", options: ['Laugh & Relax 😂', 'Edge of my Seat 🫣', 'Deep & Emotional 🥺'] },
   { id: 'brainpower', prompt: "Brainpower required?", options: ['Turn it off (Easy watch)', 'Keep me guessing (Plot twists)', 'Mind-bending (Complex)'] },
@@ -12,14 +11,19 @@ const QUESTIONS = [
 
 function ContentCard({ user, isActive, isDone, onComplete }) {
   const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
 
   const handleSelection = (option) => {
     if (!isActive || isDone) return;
     
+    const currentQ = QUESTIONS[idx].id;
+    const newAnswers = { ...answers, [currentQ]: option };
+    setAnswers(newAnswers);
+    
     if (idx < QUESTIONS.length - 1) {
       setIdx(idx + 1);
     } else {
-      onComplete();
+      onComplete(newAnswers);
     }
   };
 
@@ -29,7 +33,7 @@ function ContentCard({ user, isActive, isDone, onComplete }) {
     <motion.div 
       className="content-card"
       animate={{ 
-        opacity: isActive ? 1 : (isDone ? 0.8 : 0.55), /* Increased from 0.3 for readability */
+        opacity: isActive ? 1 : (isDone ? 0.8 : 0.55),
         scale: isActive ? 1.02 : 1,
         borderColor: isActive ? 'var(--accent-gold)' : 'rgba(255,255,255,0.1)'
       }}
@@ -67,7 +71,7 @@ function ContentCard({ user, isActive, isDone, onComplete }) {
                   disabled={!isActive || isDone}
                   style={{
                     cursor: isActive ? 'pointer' : 'not-allowed',
-                    opacity: isActive ? 1 : 0.8 /* Button text stays highly readable */
+                    opacity: isActive ? 1 : 0.8
                   }}
                 >
                   {opt}

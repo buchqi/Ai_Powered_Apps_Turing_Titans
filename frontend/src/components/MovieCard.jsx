@@ -22,18 +22,18 @@ function MovieCard({ movie, onSwipe }) {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
     >
-      <img className="movie-card__poster" src={movie.poster} alt={movie.title} />
+      <img className="movie-card__poster" src={movie.poster_url} alt={movie.title} />
 
       <div className="movie-card__content">
         <div className="ai-reason-badge">
-          ✧ High Fairness: 98%
+          ✧ High Fairness: {movie.ai_fairness_score}%
         </div>
         
         <h2>{movie.title}</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: '1.4' }}>
           {movie.year} • {movie.genres?.join(' / ')} <br/>
           <span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.6)' }}>
-            "Matches your interest in deep psychology and partner B's love for slow-burns."
+            "{movie.ai_explanation}"
           </span>
         </p>
         

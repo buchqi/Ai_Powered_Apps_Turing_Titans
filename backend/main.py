@@ -1,10 +1,19 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from services.recommendation_service import create_recommendation_session
 
-app = FastAPI(title="Turing Titans - Film Adviser API")
+app = FastAPI()
 
-# This matches the Frontend's new question pack perfectly
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class UserPreferences(BaseModel):
     vibe: str
     brainpower: str
@@ -16,32 +25,16 @@ class MatchRequest(BaseModel):
     user_a: UserPreferences
     user_b: UserPreferences
 
-class MovieRecommendation(BaseModel):
-    title: str
-    year: str
-    poster_url: str
-    genres: List[str]
-    ai_fairness_score: int
-    ai_explanation: str
-
-@app.post("/api/match", response_model=List[MovieRecommendation])
+@app.post("/api/match")
 async def generate_matches(payload: MatchRequest):
-    """
-    TEAMMATES: Implement TMDb API fetching here!
-    1. Parse payload.user_a and payload.user_b
-    2. Map "Laugh & Relax" -> TMDb Genre ID 35 (Comedy)
-    3. If dealbreaker == "No Sad Endings", filter out Drama/Tragedy tags.
-    4. Pass through an LLM to generate the `ai_explanation`.
-    """
-    
-    # Mock Response so Frontend can keep working
-    return [
-        {
-            "title": "Everything Everywhere All at Once",
-            "year": "2022",
-            "poster_url": "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070",
-            "genres": ["Action", "Sci-Fi", "Comedy"],
-            "ai_fairness_score": 96,
-            "ai_explanation": "Hits User A's 'Mind-Bending' requirement while giving User B the 'Laugh & Relax' vibe."
-        }
-    ]
+    prefs = {"userA": payload.user_a.dict(), "userB": payload.user_b.dict()}
+    result = create_recommendation_session(prefs, batch_size=5)
+
+    return [{
+        "title": m.get("title"),
+        "year": str(m.get("year")),
+        "poster_url": m.get("poster_url"),
+        "genres": m.get("genres"),
+        "ai_fairness_score": 95,
+        "ai_explanation": m.get("match_reason")
+    } for m in result["movies"]]

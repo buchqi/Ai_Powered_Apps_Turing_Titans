@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -31,25 +31,25 @@ function Landing() {
     <main className="landing">
       {/* ── Hero ── */}
       <section className="landing__hero" aria-labelledby="hero-title">
-        <motion.p className="landing__eyebrow" {...fadeUp(0)}>
+        <Motion.p className="landing__eyebrow" {...fadeUp(0)}>
           AI-Powered Movie Matching
-        </motion.p>
+        </Motion.p>
 
-        <motion.h1 className="landing__title" id="hero-title" {...fadeUp(0.1)}>
+        <Motion.h1 className="landing__title" id="hero-title" {...fadeUp(0.1)}>
           Two Tastes.<br />One Perfect Film.
-        </motion.h1>
+        </Motion.h1>
 
-        <motion.p className="landing__tagline" {...fadeUp(0.22)}>
+        <Motion.p className="landing__tagline" {...fadeUp(0.22)}>
           Stop arguing over what to watch. Film Adviser merges both of your preferences and surfaces movies you'll actually both love.
-        </motion.p>
+        </Motion.p>
 
-        <motion.div {...fadeUp(0.34)}>
+        <Motion.div {...fadeUp(0.34)}>
           <Link to="/match" className="landing__cta">
             Start Matching →
           </Link>
-        </motion.div>
+        </Motion.div>
 
-        <motion.p
+        <Motion.p
           className="landing__scroll-hint"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -57,7 +57,7 @@ function Landing() {
           aria-hidden="true"
         >
           ↓ How it works
-        </motion.p>
+        </Motion.p>
       </section>
 
       {/* ── How It Works ── */}
@@ -67,7 +67,7 @@ function Landing() {
         </h2>
         <div className="landing__steps-grid">
           {STEPS.map((step, i) => (
-            <motion.div
+            <Motion.div
               key={step.num}
               className="landing__step"
               initial={{ opacity: 0, y: 30 }}
@@ -78,7 +78,7 @@ function Landing() {
               <div className="landing__step-num">{step.num}</div>
               <h3>{step.title}</h3>
               <p>{step.desc}</p>
-            </motion.div>
+            </Motion.div>
           ))}
         </div>
 

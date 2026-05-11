@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 
 const FEATURES = [
   {
@@ -28,7 +28,7 @@ const FEATURES = [
 function About() {
   return (
     <main className="about-page">
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -51,7 +51,7 @@ function About() {
           A couples and friends movie matcher that uses AI to find films everyone
           actually wants to watch — without the usual negotiation.
         </p>
-      </motion.div>
+      </Motion.div>
 
       <hr className="about-divider" />
 
@@ -81,7 +81,7 @@ function About() {
 
         <div className="about-features">
           {FEATURES.map((f, i) => (
-            <motion.div
+            <Motion.div
               key={f.title}
               className="about-feature"
               initial={{ opacity: 0, y: 16 }}
@@ -92,7 +92,7 @@ function About() {
               <div className="about-feature__icon">{f.icon}</div>
               <h4>{f.title}</h4>
               <p>{f.desc}</p>
-            </motion.div>
+            </Motion.div>
           ))}
         </div>
       </section>

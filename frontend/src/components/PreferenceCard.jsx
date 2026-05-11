@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 /**
  * Steps map 1-to-1 with backend UserPreferences:
@@ -73,8 +73,6 @@ function PreferenceCard({ user, isActive, isDone, onComplete }) {
   };
 
   const current = STEPS[step];
-  const progress = ((step) / STEPS.length) * 100;
-
   return (
     <div
       className="content-card"
@@ -108,7 +106,7 @@ function PreferenceCard({ user, isActive, isDone, onComplete }) {
         ) : (
           <>
             <AnimatePresence mode="wait">
-              <motion.h2
+              <Motion.h2
                 key={step}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -122,7 +120,7 @@ function PreferenceCard({ user, isActive, isDone, onComplete }) {
                 }}
               >
                 {current.question}
-              </motion.h2>
+              </Motion.h2>
             </AnimatePresence>
 
             {/* Step progress bar */}
@@ -159,7 +157,7 @@ function PreferenceCard({ user, isActive, isDone, onComplete }) {
       {/* Options — only shown when active and not done */}
       {!isDone && isActive && (
         <AnimatePresence mode="wait">
-          <motion.div
+          <Motion.div
             key={step}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -176,7 +174,7 @@ function PreferenceCard({ user, isActive, isDone, onComplete }) {
                 {opt}
               </button>
             ))}
-          </motion.div>
+          </Motion.div>
         </AnimatePresence>
       )}
 

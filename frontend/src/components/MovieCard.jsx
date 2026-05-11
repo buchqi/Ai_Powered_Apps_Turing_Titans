@@ -1,5 +1,7 @@
 import React from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion as Motion, useMotionValue, useTransform } from 'framer-motion';
+
+const PLACEHOLDER_POSTER_URL = 'http://127.0.0.1:8000/static/placeholder-poster.svg';
 
 function MovieCard({ movie, onSwipe }) {
   const x = useMotionValue(0);
@@ -8,16 +10,19 @@ function MovieCard({ movie, onSwipe }) {
   const likeOpacity = useTransform(x, [0, 80], [0, 1]);
   const nopeOpacity = useTransform(x, [0, -80], [0, 1]);
 
+  const genres = Array.isArray(movie.genres) ? movie.genres.join(' / ') : movie.genres;
+  const duration = movie.duration ? `${movie.duration} min` : null;
+  const reason = movie.match_reason ?? movie.ai_explanation;
+
   const handleDragEnd = (_, info) => {
     if (info.offset.x > 100) onSwipe('like');
     else if (info.offset.x < -100) onSwipe('dislike');
   };
 
-  // Stop pointer propagation so button clicks don't start a drag
   const stopDrag = (e) => e.stopPropagation();
 
   return (
-    <motion.article
+    <Motion.article
       className="movie-card"
       style={{ x, rotate, opacity }}
       drag="x"
@@ -30,46 +35,61 @@ function MovieCard({ movie, onSwipe }) {
     >
       <img
         className="movie-card__poster"
-        src={movie.poster_url}
+        src={movie.poster_url || PLACEHOLDER_POSTER_URL}
         alt={movie.title}
+        onError={(e) => {
+          if (e.currentTarget.src !== PLACEHOLDER_POSTER_URL) {
+            e.currentTarget.src = PLACEHOLDER_POSTER_URL;
+          }
+        }}
         draggable={false}
       />
 
-      {/* LIKE stamp */}
-      <motion.div
+      <Motion.div
         style={{
           opacity: likeOpacity,
-          position: 'absolute', top: 40, right: 40,
-          border: '4px solid #4ade80', color: '#4ade80',
-          padding: '8px 16px', borderRadius: '8px',
-          fontSize: '2rem', fontWeight: 'bold',
-          transform: 'rotate(15deg)', zIndex: 10,
+          position: 'absolute',
+          top: 40,
+          right: 40,
+          border: '4px solid #4ade80',
+          color: '#4ade80',
+          padding: '8px 16px',
+          borderRadius: '8px',
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          transform: 'rotate(15deg)',
+          zIndex: 10,
           pointerEvents: 'none',
         }}
         aria-hidden="true"
       >
         LIKE
-      </motion.div>
+      </Motion.div>
 
-      {/* NOPE stamp */}
-      <motion.div
+      <Motion.div
         style={{
           opacity: nopeOpacity,
-          position: 'absolute', top: 40, left: 40,
-          border: '4px solid #f87171', color: '#f87171',
-          padding: '8px 16px', borderRadius: '8px',
-          fontSize: '2rem', fontWeight: 'bold',
-          transform: 'rotate(-15deg)', zIndex: 10,
+          position: 'absolute',
+          top: 40,
+          left: 40,
+          border: '4px solid #f87171',
+          color: '#f87171',
+          padding: '8px 16px',
+          borderRadius: '8px',
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          transform: 'rotate(-15deg)',
+          zIndex: 10,
           pointerEvents: 'none',
         }}
         aria-hidden="true"
       >
         NOPE
-      </motion.div>
+      </Motion.div>
 
       <div className="movie-card__content">
         <div className="ai-reason-badge">
-          ✧ Match Score: {movie.ai_fairness_score}%
+          Rating: {movie.rating ?? 'N/A'}
         </div>
 
         <h2 style={{ fontFamily: 'Playfair Display, serif', marginBottom: '6px' }}>
@@ -83,14 +103,20 @@ function MovieCard({ movie, onSwipe }) {
             lineHeight: '1.5',
           }}
         >
-          {movie.year} · {movie.genres?.join(' / ')}
+          {movie.year}
+          {genres && ` - ${genres}`}
+          {duration && (
+            <>
+              <br />
+              {duration}
+            </>
+          )}
           <br />
           <span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.55)' }}>
-            "{movie.ai_explanation}"
+            "{reason || 'Recommended from your combined preferences.'}"
           </span>
         </p>
 
-        {/* Buttons need pointerEvents: auto (parent has none) and stopDrag */}
         <div
           style={{
             display: 'flex',
@@ -102,11 +128,13 @@ function MovieCard({ movie, onSwipe }) {
             onPointerDown={stopDrag}
             onClick={() => onSwipe('dislike')}
             style={{
-              flex: 1, padding: '13px',
+              flex: 1,
+              padding: '13px',
               borderRadius: '14px',
               border: '1px solid rgba(255,255,255,0.18)',
               background: 'rgba(0,0,0,0.45)',
-              color: 'white', cursor: 'pointer',
+              color: 'white',
+              cursor: 'pointer',
               fontFamily: 'Inter, sans-serif',
               transition: '0.2s',
             }}
@@ -118,11 +146,14 @@ function MovieCard({ movie, onSwipe }) {
             onPointerDown={stopDrag}
             onClick={() => onSwipe('like')}
             style={{
-              flex: 1, padding: '13px',
+              flex: 1,
+              padding: '13px',
               borderRadius: '14px',
               background: 'var(--accent-red)',
-              border: 'none', color: 'white',
-              cursor: 'pointer', fontWeight: 'bold',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 'bold',
               fontFamily: 'Inter, sans-serif',
             }}
             aria-label={`Watch ${movie.title}`}
@@ -131,7 +162,7 @@ function MovieCard({ movie, onSwipe }) {
           </button>
         </div>
       </div>
-    </motion.article>
+    </Motion.article>
   );
 }
 

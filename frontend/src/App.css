@@ -448,6 +448,24 @@ body, html {
   color: var(--text-muted);
 }
 
+.watchlist-card__remove {
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.76rem;
+  padding: 8px 10px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.watchlist-card__remove:hover {
+  border-color: rgba(245, 200, 66, 0.4);
+  color: var(--text-main);
+}
+
 .watchlist-empty {
   text-align: center;
   padding: 10vh 0;

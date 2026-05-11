@@ -186,6 +186,32 @@ npm install
 npm run dev
 ```
 
+### Movie poster data
+
+Movie poster URLs live in `backend/data/movies.json` and are copied into ChromaDB metadata during ingestion.
+
+To fetch real poster URLs from TMDB:
+
+```bash
+cd backend
+$env:TMDB_API_KEY="your_tmdb_api_key"
+python scripts/fetch_posters.py
+```
+
+If `TMDB_API_KEY` is missing or no poster is found, the backend keeps the fallback poster:
+
+```text
+http://127.0.0.1:8000/static/placeholder-poster.svg
+```
+
+After changing `movies.json`, rebuild ChromaDB so recommendation responses include the updated poster metadata:
+
+```bash
+# delete backend/vector_db/chroma
+cd backend
+python scripts/ingest_movies.py
+```
+
 ---
 
 ## 🔮 Future Improvements

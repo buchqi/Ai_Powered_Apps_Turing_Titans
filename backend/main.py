@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import List
-from services.recommendation_service import create_recommendation_session
+from services.recommendation_service import (
+    add_movie_to_watchlist,
+    create_recommendation_session,
+    get_more_movies,
+    get_watchlist,
+    remove_movie_from_watchlist,
+)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,6 +31,42 @@ class UserPreferences(BaseModel):
 class MatchRequest(BaseModel):
     user_a: UserPreferences
     user_b: UserPreferences
+
+class RecommendationSessionRequest(BaseModel):
+    preferences: dict
+    batch_size: int = 10
+
+class MoreRecommendationsRequest(BaseModel):
+    session_id: str
+    batch_size: int = 10
+
+class WatchlistAddRequest(BaseModel):
+    session_id: str
+    movie: dict
+
+class WatchlistRemoveRequest(BaseModel):
+    session_id: str
+    movie_id: str
+
+@app.post("/recommend/session")
+async def generate_recommendation_session(payload: RecommendationSessionRequest):
+    return create_recommendation_session(payload.preferences, payload.batch_size)
+
+@app.post("/recommend/more")
+async def generate_more_recommendations(payload: MoreRecommendationsRequest):
+    return get_more_movies(payload.session_id, payload.batch_size)
+
+@app.post("/watchlist/add")
+async def add_watchlist_item(payload: WatchlistAddRequest):
+    return add_movie_to_watchlist(payload.session_id, payload.movie)
+
+@app.post("/watchlist/remove")
+async def remove_watchlist_item(payload: WatchlistRemoveRequest):
+    return remove_movie_from_watchlist(payload.session_id, payload.movie_id)
+
+@app.get("/watchlist/{session_id}")
+async def read_watchlist(session_id: str):
+    return get_watchlist(session_id)
 
 @app.post("/api/match")
 async def generate_matches(payload: MatchRequest):

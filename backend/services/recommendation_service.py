@@ -1,11 +1,102 @@
-import uuid
 import re
+import uuid
 
 from services.ai_service import add_ai_explanations
 from services.rag_service import search_movies
 
 
 sessions: dict[str, dict] = {}
+
+NEGATIVE_FIELD_NAMES = (
+    "avoid",
+    "dealbreaker",
+    "exclude",
+    "dislike",
+    "no_",
+    "not",
+)
+
+
+def get_movie_key(movie: dict) -> str:
+    key = movie.get("id") or movie.get("movie_id") or movie.get("title") or ""
+    return str(key).strip().lower()
+
+
+def append_unique_movies(current_movies: list, incoming_movies: list) -> list:
+    seen = {get_movie_key(movie) for movie in current_movies if get_movie_key(movie)}
+    combined = list(current_movies)
+
+    for movie in incoming_movies:
+        key = get_movie_key(movie)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        combined.append(movie)
+
+    return combined
+
+
+def _as_text(value) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return " ".join(str(item).strip() for item in value if str(item).strip())
+    return str(value).strip()
+
+
+def _is_negative_field(field_name: str) -> bool:
+    normalized = str(field_name).strip().lower()
+    return any(token in normalized for token in NEGATIVE_FIELD_NAMES)
+
+
+def _looks_like_negative_preference(value) -> bool:
+    text = _as_text(value).lower()
+    return bool(re.search(r"\b(no|avoid|exclude|without|not)\b", text))
+
+
+def _positive_preference_words(user_prefs: dict) -> list[str]:
+    words: list[str] = []
+
+    for field, value in user_prefs.items():
+        if value is None or _is_negative_field(field) or _looks_like_negative_preference(value):
+            continue
+
+        if isinstance(value, dict):
+            words.extend(_positive_preference_words(value))
+            continue
+
+        text = _as_text(value)
+        if text:
+            words.append(text)
+
+    return words
+
+
+def _preferences_to_query(preferences: dict) -> str:
+    if not preferences:
+        return "movies"
+
+    query_parts: list[str] = []
+    user_a = preferences.get("userA")
+    user_b = preferences.get("userB")
+
+    if isinstance(user_a, dict):
+        query_parts.extend(_positive_preference_words(user_a))
+    if isinstance(user_b, dict):
+        query_parts.extend(_positive_preference_words(user_b))
+
+    if not query_parts:
+        for field, value in preferences.items():
+            if _is_negative_field(field) or _looks_like_negative_preference(value):
+                continue
+            if isinstance(value, dict):
+                query_parts.extend(_positive_preference_words(value))
+                continue
+            text = _as_text(value)
+            if text:
+                query_parts.append(text)
+
+    return " ".join(query_parts) if query_parts else "movies"
 
 
 def _collect_avoided_genres(preferences: dict) -> set[str]:
@@ -16,21 +107,25 @@ def _collect_avoided_genres(preferences: dict) -> set[str]:
             return
         if isinstance(value, list):
             for item in value:
-                text = str(item).strip().lower()
-                if text:
-                    avoided.add(text)
+                _collect(item)
             return
+
         text = str(value).strip().lower()
-        if text:
-            avoided.add(text)
+        if not text:
+            return
+
+        cleaned = re.sub(r"^(no|avoid|exclude|without)\s+", "", text).strip()
+        if cleaned and "no limits" not in cleaned and cleaned not in {"limits", "limit", "none"}:
+            avoided.add(cleaned)
 
     for key, value in preferences.items():
         key_text = str(key).lower()
         if isinstance(value, dict):
             for nested_key, nested_value in value.items():
-                if "avoid" in str(nested_key).lower():
+                nested_key_text = str(nested_key).lower()
+                if _is_negative_field(nested_key_text):
                     _collect(nested_value)
-        elif "avoid" in key_text:
+        elif _is_negative_field(key_text):
             _collect(value)
 
     return avoided
@@ -44,9 +139,7 @@ def _get_max_duration(preferences: dict) -> int | None:
             return
         if isinstance(value, list):
             for item in value:
-                text = str(item).strip().lower()
-                if text:
-                    duration_texts.append(text)
+                _collect_duration_texts(item)
             return
         text = str(value).strip().lower()
         if text:
@@ -64,8 +157,7 @@ def _get_max_duration(preferences: dict) -> int | None:
     for text in duration_texts:
         hours_match = re.search(r"(under|less than)\s*(\d+(?:\.\d+)?)\s*hours?", text)
         if hours_match:
-            hours = float(hours_match.group(2))
-            return int(hours * 60)
+            return int(float(hours_match.group(2)) * 60)
 
         minutes_match = re.search(r"(under|less than)\s*(\d+)\s*(minutes?|mins?|min)", text)
         if minutes_match:
@@ -128,12 +220,12 @@ def _movie_has_avoided_genre(movie: dict, avoided_genres: set[str]) -> bool:
     return False
 
 
-def filter_movies(preferences: dict, movies: list[dict]) -> list[dict]:
+def filter_movies(preferences: dict, candidates: list[dict]) -> list[dict]:
     avoided_genres = _collect_avoided_genres(preferences)
     max_duration = _get_max_duration(preferences)
     filtered: list[dict] = []
 
-    for movie in movies:
+    for movie in candidates:
         if _movie_has_avoided_genre(movie, avoided_genres):
             continue
         if max_duration is not None:
@@ -145,150 +237,42 @@ def filter_movies(preferences: dict, movies: list[dict]) -> list[dict]:
     return filtered
 
 
-def _preferences_to_query(preferences: dict) -> str:
-    def _to_words(value) -> str:
-        if value is None:
-            return ""
-        if isinstance(value, list):
-            items = [str(item).strip() for item in value if str(item).strip()]
-            return ", ".join(items)
-        return str(value).strip()
-
-    def _user_sentence(label: str, user_prefs: dict) -> str:
-        tone = _to_words(user_prefs.get("tone"))
-        pace = _to_words(user_prefs.get("pace") or user_prefs.get("pacing"))
-        avoid = _to_words(user_prefs.get("avoid_genres") or user_prefs.get("avoid"))
-        runtime = _to_words(user_prefs.get("runtime") or user_prefs.get("duration"))
-
-        wants_parts = []
-        if tone:
-            wants_parts.append(tone)
-        if pace:
-            wants_parts.append(pace)
-
-        sentence = f"{label} wants"
-        if wants_parts:
-            sentence += f" a {', '.join(wants_parts)} movie"
-        else:
-            sentence += " a movie"
-
-        if avoid:
-            sentence += f", avoids {avoid}"
-        if runtime:
-            sentence += f", prefers {runtime}"
-
-        return sentence + "."
-
-    if not preferences:
-        return "movies"
-
-    # Two-user nested preference mode (best for couple/friend matching RAG query)
-    user_a = preferences.get("userA")
-    user_b = preferences.get("userB")
-    if isinstance(user_a, dict) and isinstance(user_b, dict):
-        query_parts = [
-            _user_sentence("User A", user_a),
-            _user_sentence("User B", user_b),
-            "Find movies that satisfy both users.",
-        ]
-
-        combined_avoids = []
-        for user_prefs in (user_a, user_b):
-            avoid = user_prefs.get("avoid_genres") or user_prefs.get("avoid")
-            if isinstance(avoid, list):
-                combined_avoids.extend(
-                    [str(item).strip() for item in avoid if str(item).strip()]
-                )
-            elif avoid is not None and str(avoid).strip():
-                combined_avoids.append(str(avoid).strip())
-
-        if combined_avoids:
-            unique_avoids = []
-            seen = set()
-            for item in combined_avoids:
-                normalized = item.lower()
-                if normalized in seen:
-                    continue
-                seen.add(normalized)
-                unique_avoids.append(item)
-            query_parts.append(f"Exclude avoided genres: {', '.join(unique_avoids)}.")
-        else:
-            query_parts.append("Exclude avoided genres.")
-
-        return " ".join(query_parts)
-
-    parts = []
-    for key, value in preferences.items():
-        if value is None:
-            continue
-        if isinstance(value, dict):
-            nested_parts = []
-            for nested_key, nested_value in value.items():
-                nested_text = _to_words(nested_value)
-                if nested_text:
-                    nested_parts.append(f"{nested_key} {nested_text}")
-            if nested_parts:
-                parts.append(f"{key}: {', '.join(nested_parts)}")
-            continue
-        if isinstance(value, str):
-            cleaned = value.strip()
-            if cleaned:
-                parts.append(f"{key}: {cleaned}")
-            continue
-        if isinstance(value, list):
-            cleaned_items = [str(item).strip() for item in value if str(item).strip()]
-            if cleaned_items:
-                parts.append(f"{key}: {', '.join(cleaned_items)}")
-            continue
-        parts.append(f"{key}: {value}")
-
-    return ". ".join(parts) if parts else "movies"
+def _has_unseen_movies(session: dict) -> bool:
+    seen_movie_ids = session["seen_movie_ids"]
+    return any(
+        get_movie_key(movie) not in seen_movie_ids
+        for movie in session["candidates"][session["current_index"]:]
+    )
 
 
 def create_recommendation_session(preferences: dict, batch_size: int = 10) -> dict:
+    safe_batch_size = max(1, int(batch_size))
     query = _preferences_to_query(preferences)
     original_candidates = search_movies(query, limit=50)
     filtered_candidates = filter_movies(preferences, original_candidates)
-
-    safe_batch_size = max(1, int(batch_size))
-    candidates = list(filtered_candidates)
-
-    if len(candidates) < safe_batch_size:
-        seen_ids = set()
-        for movie in candidates:
-            movie_id = movie.get("id") or movie.get("movie_id") or movie.get("title")
-            if movie_id is not None:
-                seen_ids.add(str(movie_id))
-
-        for movie in original_candidates:
-            movie_id = movie.get("id") or movie.get("movie_id") or movie.get("title")
-            marker = str(movie_id) if movie_id is not None else None
-            if marker is not None and marker in seen_ids:
-                continue
-
-            movie_with_warning = dict(movie)
-            movie_with_warning["constraint_warning"] = (
-                "May violate one or more user constraints."
-            )
-            candidates.append(movie_with_warning)
-            if marker is not None:
-                seen_ids.add(marker)
-
-    candidates = add_ai_explanations(preferences, candidates)
+    candidates = add_ai_explanations(preferences, append_unique_movies([], filtered_candidates))
 
     first_batch = candidates[:safe_batch_size]
+    seen_movie_ids = {
+        get_movie_key(movie)
+        for movie in first_batch
+        if get_movie_key(movie)
+    }
     session_id = str(uuid.uuid4())
 
     sessions[session_id] = {
+        "preferences": preferences,
         "query": query,
         "candidates": candidates,
         "current_index": len(first_batch),
+        "seen_movie_ids": seen_movie_ids,
+        "watchlist": [],
     }
 
     return {
         "session_id": session_id,
         "movies": first_batch,
-        "has_more": len(candidates) > len(first_batch),
+        "has_more": _has_unseen_movies(sessions[session_id]),
     }
 
 
@@ -298,14 +282,63 @@ def get_more_movies(session_id: str, batch_size: int = 10) -> dict:
         return {"error": "Session not found"}
 
     safe_batch_size = max(1, int(batch_size))
-    start = session["current_index"]
-    end = start + safe_batch_size
+    candidates = session["candidates"]
+    next_batch: list[dict] = []
 
-    next_batch = session["candidates"][start:end]
-    session["current_index"] = end
+    while session["current_index"] < len(candidates) and len(next_batch) < safe_batch_size:
+        movie = candidates[session["current_index"]]
+        session["current_index"] += 1
+
+        key = get_movie_key(movie)
+        if not key or key in session["seen_movie_ids"]:
+            continue
+
+        session["seen_movie_ids"].add(key)
+        next_batch.append(movie)
 
     return {
         "session_id": session_id,
         "movies": next_batch,
-        "has_more": session["current_index"] < len(session["candidates"]),
+        "has_more": _has_unseen_movies(session),
+    }
+
+
+def add_movie_to_watchlist(session_id: str, movie: dict) -> dict:
+    session = sessions.get(session_id)
+    if session is None:
+        return {"error": "Session not found", "watchlist": []}
+
+    session["watchlist"] = append_unique_movies(session["watchlist"], [movie])
+    return {
+        "session_id": session_id,
+        "watchlist": session["watchlist"],
+    }
+
+
+def remove_movie_from_watchlist(session_id: str, movie_id: str) -> dict:
+    session = sessions.get(session_id)
+    if session is None:
+        return {"error": "Session not found", "watchlist": []}
+
+    normalized_id = str(movie_id).strip().lower()
+    session["watchlist"] = [
+        movie
+        for movie in session["watchlist"]
+        if get_movie_key(movie) != normalized_id
+    ]
+
+    return {
+        "session_id": session_id,
+        "watchlist": session["watchlist"],
+    }
+
+
+def get_watchlist(session_id: str) -> dict:
+    session = sessions.get(session_id)
+    if session is None:
+        return {"error": "Session not found", "watchlist": []}
+
+    return {
+        "session_id": session_id,
+        "watchlist": session["watchlist"],
     }

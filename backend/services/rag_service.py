@@ -5,6 +5,7 @@ import chromadb
 
 COLLECTION_NAME = "movies"
 CHROMA_PATH = Path(__file__).resolve().parent.parent / "vector_db" / "chroma"
+PLACEHOLDER_POSTER_URL = "http://127.0.0.1:8000/static/placeholder-poster.svg"
 
 _client = chromadb.PersistentClient(path=str(CHROMA_PATH))
 _collection = _client.get_collection(name=COLLECTION_NAME)
@@ -51,7 +52,7 @@ def search_movies(query: str, limit: int = 10) -> list[dict]:
                 "genres": metadata.get("genres"),
                 "duration": metadata.get("duration"),
                 "rating": metadata.get("rating"),
-                "poster_url": metadata.get("poster_url"),
+                "poster_url": metadata.get("poster_url") or PLACEHOLDER_POSTER_URL,
                 "document": document,
                 "distance": distance,
             }

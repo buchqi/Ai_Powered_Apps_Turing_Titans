@@ -4,6 +4,9 @@ from pathlib import Path
 import chromadb
 
 
+PLACEHOLDER_POSTER_URL = "http://127.0.0.1:8000/static/placeholder-poster.svg"
+
+
 def build_movie_document(movie: dict) -> str:
     genres = movie.get("genres", [])
     genres_text = ", ".join(genres) if isinstance(genres, list) else str(genres)
@@ -24,7 +27,7 @@ def main() -> None:
     chroma_path = backend_root / "vector_db" / "chroma"
     collection_name = "movies"
 
-    with movies_path.open("r", encoding="utf-8") as file:
+    with movies_path.open("r", encoding="utf-8-sig") as file:
         movies = json.load(file)
 
     print(f"Loaded {len(movies)} movies from {movies_path}.")
@@ -61,7 +64,7 @@ def main() -> None:
                 "rating": float(movie.get("rating", 0.0))
                 if movie.get("rating") is not None
                 else 0.0,
-                "poster_url": str(movie.get("poster_url", "")),
+                "poster_url": str(movie.get("poster_url") or PLACEHOLDER_POSTER_URL),
             }
         )
 

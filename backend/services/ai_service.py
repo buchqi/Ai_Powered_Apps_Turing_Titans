@@ -1,18 +1,22 @@
 import logging
 import os
-from typing import Optional
+import time
+from typing import Any, Optional
 
 try:
     import google.genai as genai
 except ImportError:
-    print("ERROR: google-genai package not installed.")
-    print("Run: pip install google-genai")
-    exit(1)
+    genai = None
+
+from utils.episode_logger import summarize_preferences, write_episode_log
+from utils.llm_resilience import call_with_resilience
 
 
 LOGGER = logging.getLogger(__name__)
 MODEL_NAME = "gemini-3-flash-preview"
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+DEFAULT_TIMEOUT_SECONDS = 12
+DEFAULT_MAX_RETRIES = 2
 
 
 def _format_preferences(preferences: dict) -> str:
@@ -112,9 +116,77 @@ def _extract_avoided_genres(preferences: dict) -> list[str]:
     return unique
 
 
-def _safe_call_llm(preferences: dict, movie: dict) -> Optional[str]:
+def _extract_usage(response: Any) -> dict:
+    usage = getattr(response, "usage", None) or getattr(response, "usage_metadata", None)
+    if not usage:
+        return {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "cache_read_tokens": 0,
+        }
+
+    prompt_tokens = (
+        getattr(usage, "prompt_tokens", None)
+        or getattr(usage, "prompt_token_count", None)
+        or 0
+    )
+    completion_tokens = (
+        getattr(usage, "completion_tokens", None)
+        or getattr(usage, "candidates_token_count", None)
+        or 0
+    )
+    total_tokens = (
+        getattr(usage, "total_tokens", None)
+        or getattr(usage, "total_token_count", None)
+        or prompt_tokens + completion_tokens
+    )
+    cache_read_tokens = (
+        getattr(usage, "cache_read_tokens", None)
+        or getattr(usage, "cached_content_token_count", None)
+        or 0
+    )
+    return {
+        "prompt_tokens": int(prompt_tokens or 0),
+        "completion_tokens": int(completion_tokens or 0),
+        "total_tokens": int(total_tokens or 0),
+        "cache_read_tokens": int(cache_read_tokens or 0),
+    }
+
+
+def _safe_call_llm(preferences: dict, movie: dict, session_id: str, endpoint: str) -> Optional[str]:
+    log_summary = summarize_preferences(preferences)
+    fallback_reason = _movie_specific_fallback_reason(preferences, movie)
+    started = time.perf_counter()
+
+    if genai is None:
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        write_episode_log(
+            session_id=session_id,
+            endpoint=endpoint,
+            user_query_or_preferences_summary=log_summary,
+            model=MODEL_NAME,
+            latency_ms=latency_ms,
+            fallback_triggered=True,
+            status="fallback",
+            error_type="missing_google_genai",
+        )
+        LOGGER.warning("google-genai package is not installed; using fallback match_reason.")
+        return None
+
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        write_episode_log(
+            session_id=session_id,
+            endpoint=endpoint,
+            user_query_or_preferences_summary=log_summary,
+            model=MODEL_NAME,
+            latency_ms=latency_ms,
+            fallback_triggered=True,
+            status="fallback",
+            error_type="missing_api_key",
+        )
         LOGGER.warning("GEMINI_API_KEY is not set; using fallback match_reason.")
         return None
 
@@ -143,7 +215,15 @@ def _safe_call_llm(preferences: dict, movie: dict) -> Optional[str]:
     client = genai.Client(api_key=api_key)
 
 
-    try:
+    usage = {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "cache_read_tokens": 0,
+    }
+
+    def _call_gemini() -> Optional[str]:
+        nonlocal usage
         response = client.chat.completions.create(
             model=MODEL_NAME,
             temperature=0.7,
@@ -156,16 +236,40 @@ def _safe_call_llm(preferences: dict, movie: dict) -> Optional[str]:
                 {"role": "user", "content": prompt},
             ],
         )
-    except Exception as exc:
-        LOGGER.warning("LLM call failed for movie '%s': %s", movie.get("title"), exc)
-        return None
 
-    if not response.choices:
-        return None
+        usage = _extract_usage(response)
+        if not response.choices:
+            return None
 
-    answer = (response.choices[0].message.content or "").strip()
-    answer = " ".join(answer.split())
-    return answer or None
+        answer = (response.choices[0].message.content or "").strip()
+        answer = " ".join(answer.split())
+        return answer or None
+
+    result = call_with_resilience(
+        _call_gemini,
+        fallback_value=None,
+        timeout_seconds=DEFAULT_TIMEOUT_SECONDS,
+        max_retries=DEFAULT_MAX_RETRIES,
+    )
+
+    write_episode_log(
+        session_id=session_id,
+        endpoint=endpoint,
+        user_query_or_preferences_summary=log_summary,
+        model=MODEL_NAME,
+        prompt_tokens=usage["prompt_tokens"],
+        completion_tokens=usage["completion_tokens"],
+        total_tokens=usage["total_tokens"],
+        cache_read_tokens=usage["cache_read_tokens"],
+        latency_ms=result.latency_ms,
+        fallback_triggered=result.fallback_triggered or not bool(result.value),
+        status=result.status if result.value else "fallback",
+        error_type=result.error_type if result.fallback_triggered else ("" if result.value else "empty_response"),
+    )
+
+    if result.fallback_triggered:
+        LOGGER.warning("LLM call failed for movie '%s': %s", movie.get("title"), result.error_type)
+    return result.value or fallback_reason
 
 
 def _movie_specific_fallback_reason(preferences: dict, movie: dict) -> str:
@@ -189,11 +293,16 @@ def _movie_specific_fallback_reason(preferences: dict, movie: dict) -> str:
     )
 
 
-def add_ai_explanations(preferences: dict, movies: list[dict]) -> list[dict]:
+def add_ai_explanations(
+    preferences: dict,
+    movies: list[dict],
+    session_id: str = "unknown",
+    endpoint: str = "/recommend/session",
+) -> list[dict]:
     updated_movies = []
     for movie in movies:
         movie_with_reason = dict(movie)
-        reason = _safe_call_llm(preferences, movie)
+        reason = _safe_call_llm(preferences, movie, session_id, endpoint)
         movie_with_reason["match_reason"] = reason or _movie_specific_fallback_reason(
             preferences, movie
         )

@@ -1,19 +1,24 @@
 import os 
-import time 
-from dotenv import load_dotenv
 import sys
 from prompts.recommendation_prompt import build_prompt 
 from utils.cost_calculator import calculate_cost
+from utils.episode_logger import summarize_preferences, write_episode_log
+from utils.llm_resilience import call_with_resilience
 sys.stdout.reconfigure(encoding = "utf-8")
 # Load environment variables from .env file
 # This MUST happen before importing google.genai in some configurations
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 try:
     import google.genai as genai
 except ImportError:
     print("ERROR:google-genai package not installed")
     print("Run: pip install google-genai")
+    genai = None
 
 
 class AiService:
@@ -24,11 +29,27 @@ class AiService:
         #Get the API Key
         api_key = os.getenv("GEMINI_API_KEY")
         
-        if not api_key:
-            print("ERROR: GEMINI_API_KEY not found in environment.")
-            print("Make sure you have a .env file with: GEMINI_API_KEY=your_key_here")
-            print("See guides/gemini-setup-guide.md for instructions.")
-            exit(1)
+        if genai is None or not api_key:
+            error_type = "missing_google_genai" if genai is None else "missing_api_key"
+            write_episode_log(
+                session_id="legacy",
+                endpoint="AiService.get_recommendations",
+                user_query_or_preferences_summary=summarize_preferences(data),
+                model=self.MODEL,
+                latency_ms=0,
+                fallback_triggered=True,
+                status="fallback",
+                error_type=error_type,
+            )
+            return {
+                "response": "AI recommendations are temporarily unavailable. Please try the standard recommendation flow.",
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "cost": 0,
+                "latency": 0,
+                "fallback_triggered": True,
+            }
 
         #Create the client
         print(f"Connecting to {self.MODEL}...")
@@ -38,34 +59,52 @@ class AiService:
         PROMPT = build_prompt(data)
         
         #count tokens before generating
-        token_count_result = client.models.count_tokens(
-            model=self.MODEL,
-            contents=PROMPT
+        def _call_gemini():
+            return client.models.generate_content(
+                model=self.MODEL,
+                contents=PROMPT
+            )
+
+        result = call_with_resilience(
+            _call_gemini,
+            fallback_value=None,
+            timeout_seconds=12,
+            max_retries=2,
         )
 
-        #Make The Api call and mesure latency     
-        start_time = time.perf_counter()
-        
-        #get response
-        response = client.models.generate_content(
-            model=self.MODEL,
-            contents=PROMPT
-        )
+        response = result.value
 
-        end_time = time.perf_counter()
-
-        calculate_cost
-        output_tokens = response.usage_metadata.candidates_token_count
-        input_tokens = response.usage_metadata.prompt_token_count
+        output_tokens = 0
+        input_tokens = 0
+        if response and getattr(response, "usage_metadata", None):
+            output_tokens = int(getattr(response.usage_metadata, "candidates_token_count", 0) or 0)
+            input_tokens = int(getattr(response.usage_metadata, "prompt_token_count", 0) or 0)
         cost = calculate_cost(input_tokens, output_tokens)
+        status = "success" if response else "fallback"
+
+        write_episode_log(
+            session_id="legacy",
+            endpoint="AiService.get_recommendations",
+            user_query_or_preferences_summary=summarize_preferences(data),
+            model=self.MODEL,
+            prompt_tokens=input_tokens,
+            completion_tokens=output_tokens,
+            total_tokens=input_tokens + output_tokens,
+            cache_read_tokens=0,
+            latency_ms=result.latency_ms,
+            fallback_triggered=result.fallback_triggered or response is None,
+            status=status,
+            error_type=result.error_type if result.fallback_triggered else "",
+        )
 
         return {
-            "response": response.text,
+            "response": response.text if response else "AI recommendations are temporarily unavailable.",
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
             "total_tokens": input_tokens + output_tokens,
             "cost": cost,
-            "latency": end_time - start_time
+            "latency": result.latency_ms / 1000,
+            "fallback_triggered": result.fallback_triggered or response is None,
             }
 
         

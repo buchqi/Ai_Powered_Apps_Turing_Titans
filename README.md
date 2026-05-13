@@ -214,6 +214,53 @@ python scripts/ingest_movies.py
 
 ---
 
+## Agent Architecture
+
+Film Adviser uses an **orchestrated RAG recommendation agent** pattern.
+
+This pattern was chosen because the app needs a predictable backend workflow rather than an open-ended autonomous agent. Retrieval finds candidate movies from the ChromaDB movie collection, deterministic filters enforce user dealbreakers such as avoided genres or runtime limits, and the LLM is used only for short recommendation explanations. This keeps the product explainable, easier to evaluate, and safer for a course capstone because irreversible actions are limited and visible in service code.
+
+Example state shape:
+
+```python
+from dataclasses import dataclass, field
+
+
+@dataclass
+class AgentState:
+    session_id: str
+    preferences: dict
+    query: str
+    candidates: list[dict] = field(default_factory=list)
+    current_index: int = 0
+    seen_movie_ids: set[str] = field(default_factory=set)
+    watchlist: list[dict] = field(default_factory=list)
+    fallback_triggered: bool = False
+```
+
+State fields:
+
+- `session_id`: backend-generated identifier for the current recommendation session.
+- `preferences`: summarized User A and User B movie preferences.
+- `query`: positive-only RAG search query derived from preferences.
+- `candidates`: retrieved and filtered movie candidates.
+- `current_index`: pagination cursor for recommendation batches.
+- `seen_movie_ids`: per-session duplicate prevention set.
+- `watchlist`: session-scoped liked movies.
+- `fallback_triggered`: records whether LLM fallback behavior was used.
+
+Irreversible action map:
+
+| Action | Reversible? | Risk | Protection |
+|--------|-------------|------|------------|
+| Generate recommendations | Yes | Low | No persistent mutation |
+| Add to watchlist | Yes | Low | Session-scoped |
+| Remove from watchlist | Partially | Medium | Requires session_id and movie_id |
+| Reset session | No | High | Should require confirmation in future |
+| Delete stored user data | No | High | Not implemented yet |
+
+---
+
 ## 🔮 Future Improvements
 
 - Improved fairness algorithm

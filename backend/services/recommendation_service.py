@@ -2,7 +2,6 @@ import re
 import uuid
 
 from services.ai_service import add_ai_explanations
-from services.rag_service import search_movies
 
 
 sessions: dict[str, dict] = {}
@@ -246,11 +245,19 @@ def _has_unseen_movies(session: dict) -> bool:
 
 
 def create_recommendation_session(preferences: dict, batch_size: int = 10) -> dict:
+    from services.rag_service import search_movies
+
     safe_batch_size = max(1, int(batch_size))
+    session_id = str(uuid.uuid4())
     query = _preferences_to_query(preferences)
     original_candidates = search_movies(query, limit=50)
     filtered_candidates = filter_movies(preferences, original_candidates)
-    candidates = add_ai_explanations(preferences, append_unique_movies([], filtered_candidates))
+    candidates = add_ai_explanations(
+        preferences,
+        append_unique_movies([], filtered_candidates),
+        session_id=session_id,
+        endpoint="/recommend/session",
+    )
 
     first_batch = candidates[:safe_batch_size]
     seen_movie_ids = {
@@ -258,8 +265,6 @@ def create_recommendation_session(preferences: dict, batch_size: int = 10) -> di
         for movie in first_batch
         if get_movie_key(movie)
     }
-    session_id = str(uuid.uuid4())
-
     sessions[session_id] = {
         "preferences": preferences,
         "query": query,
@@ -267,6 +272,11 @@ def create_recommendation_session(preferences: dict, batch_size: int = 10) -> di
         "current_index": len(first_batch),
         "seen_movie_ids": seen_movie_ids,
         "watchlist": [],
+        "fallback_triggered": any(
+            "stronger match for your preferences" in str(movie.get("match_reason", ""))
+            or "weaker match" in str(movie.get("match_reason", ""))
+            for movie in candidates
+        ),
     }
 
     return {

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "G01",
+    "name": "Romantic date night without horror",
+    "input_preferences": {
+      "userA": {"vibe": "romantic warm date night", "brainpower": "easy", "reality": "real world", "action": "slow burn", "dealbreaker": "No horror"},
+      "userB": {"vibe": "romance and comedy", "brainpower": "light", "reality": "realistic", "action": "low action", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["romance", "romantic", "drama", "comedy"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should surface romance or warm drama while excluding horror."
+  },
+  {
+    "id": "G02",
+    "name": "Sci-fi for one user and drama for the other",
+    "input_preferences": {
+      "userA": {"vibe": "sci-fi ideas", "brainpower": "thoughtful", "reality": "fictional", "action": "balanced", "dealbreaker": "No horror"},
+      "userB": {"vibe": "emotional drama", "brainpower": "engaged", "reality": "character story", "action": "slow burn", "dealbreaker": "No gore"}
+    },
+    "expected_keywords": ["sci-fi", "drama", "mystery"],
+    "forbidden_keywords": ["horror", "gore"],
+    "min_results": 3,
+    "description": "Should balance speculative concepts with drama."
+  },
+  {
+    "id": "G03",
+    "name": "Short movie under 100 minutes",
+    "input_preferences": {
+      "userA": {"vibe": "short light movie", "brainpower": "easy", "reality": "any", "action": "balanced", "duration": "under 100 minutes", "dealbreaker": "No horror"},
+      "userB": {"vibe": "animated or comedy", "brainpower": "zero", "reality": "any", "action": "low action", "duration": "under 100 minutes", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["animation", "comedy", "family"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 1,
+    "description": "Should obey runtime filtering."
+  },
+  {
+    "id": "G04",
+    "name": "Family-friendly animated movie",
+    "input_preferences": {
+      "userA": {"vibe": "family-friendly animation", "brainpower": "easy", "reality": "fictional", "action": "adventure", "dealbreaker": "No violence"},
+      "userB": {"vibe": "warm animated heartfelt", "brainpower": "light", "reality": "any", "action": "balanced", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["animation", "family", "adventure"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should find animated films suitable for a broad audience."
+  },
+  {
+    "id": "G05",
+    "name": "Thriller request excluding gore",
+    "input_preferences": {
+      "userA": {"vibe": "tense thriller mystery", "brainpower": "engaged", "reality": "real world", "action": "slow burn", "dealbreaker": "No gore"},
+      "userB": {"vibe": "crime suspense", "brainpower": "focused", "reality": "grounded", "action": "balanced", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["thriller", "mystery", "crime"],
+    "forbidden_keywords": ["gore", "horror"],
+    "min_results": 3,
+    "description": "Should allow suspense while excluding explicit gore and horror."
+  },
+  {
+    "id": "G06",
+    "name": "Comedy for tired evening",
+    "input_preferences": {
+      "userA": {"vibe": "funny easy comedy", "brainpower": "zero", "reality": "real world", "action": "low action", "dealbreaker": "No heavy drama"},
+      "userB": {"vibe": "light comedy tired evening", "brainpower": "easy", "reality": "any", "action": "low action", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["comedy", "funny", "light"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 2,
+    "description": "Should prioritize easy comedy."
+  },
+  {
+    "id": "G07",
+    "name": "High-rated classic movie",
+    "input_preferences": {
+      "userA": {"vibe": "classic high rated drama", "brainpower": "engaged", "reality": "grounded", "action": "balanced", "dealbreaker": "No horror"},
+      "userB": {"vibe": "timeless highly rated", "brainpower": "thoughtful", "reality": "real world", "action": "low action", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["drama", "classic", "rated"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should surface acclaimed older or classic-feeling films."
+  },
+  {
+    "id": "G08",
+    "name": "Recent action movie",
+    "input_preferences": {
+      "userA": {"vibe": "recent action adventure", "brainpower": "easy", "reality": "fictional", "action": "high action", "dealbreaker": "No romance"},
+      "userB": {"vibe": "fast paced action", "brainpower": "light", "reality": "any", "action": "high action", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["action", "adventure", "sci-fi"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should find action-heavy choices."
+  },
+  {
+    "id": "G09",
+    "name": "Emotional drama but not too dark",
+    "input_preferences": {
+      "userA": {"vibe": "emotional heartfelt drama", "brainpower": "thoughtful", "reality": "real world", "action": "slow burn", "dealbreaker": "No dark violence"},
+      "userB": {"vibe": "uplifting emotional story", "brainpower": "engaged", "reality": "grounded", "action": "low action", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["drama", "heartfelt", "emotional"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should recommend emotional dramas without horror."
+  },
+  {
+    "id": "G10",
+    "name": "Balanced compromise between different tastes",
+    "input_preferences": {
+      "userA": {"vibe": "action sci-fi", "brainpower": "engaged", "reality": "fictional", "action": "high action", "dealbreaker": "No romance"},
+      "userB": {"vibe": "drama mystery", "brainpower": "thoughtful", "reality": "character story", "action": "balanced", "dealbreaker": "No horror"}
+    },
+    "expected_keywords": ["action", "drama", "sci-fi", "mystery"],
+    "forbidden_keywords": ["horror"],
+    "min_results": 3,
+    "description": "Should find overlap between action/sci-fi and drama/mystery."
+  }
+]

@@ -1,0 +1,264 @@
+{
+  "timestamp": "2026-05-13T19:18:38.653948+00:00",
+  "passed": 10,
+  "total": 10,
+  "score": 1.0,
+  "results": [
+    {
+      "id": "G01",
+      "name": "Romantic date night without horror",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "romance",
+        "romantic",
+        "drama",
+        "comedy"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "The Dark Knight",
+        "The Matrix",
+        "Before Sunrise",
+        "Forrest Gump",
+        "Inception",
+        "Prisoners",
+        "Parasite",
+        "Mad Max: Fury Road",
+        "The Grand Budapest Hotel",
+        "La La Land"
+      ]
+    },
+    {
+      "id": "G02",
+      "name": "Sci-fi for one user and drama for the other",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "sci-fi",
+        "drama",
+        "mystery"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "Her",
+        "Interstellar",
+        "The Dark Knight",
+        "The Prestige",
+        "Blade Runner 2049",
+        "Forrest Gump",
+        "The Shawshank Redemption",
+        "Good Will Hunting",
+        "Inception",
+        "Prisoners"
+      ]
+    },
+    {
+      "id": "G03",
+      "name": "Short movie under 100 minutes",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 4,
+      "min_results": 1,
+      "expected_hits": [
+        "animation",
+        "comedy",
+        "family"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "Inside Out",
+        "The Grand Budapest Hotel",
+        "Soul",
+        "The Hangover"
+      ]
+    },
+    {
+      "id": "G04",
+      "name": "Family-friendly animated movie",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "animation",
+        "family",
+        "adventure"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "Spider-Man: Into the Spider-Verse",
+        "Interstellar",
+        "The Dark Knight",
+        "Mad Max: Fury Road",
+        "The Grand Budapest Hotel",
+        "The Revenant",
+        "Gladiator",
+        "The Lord of the Rings: The Fellowship of the Ring",
+        "Coco",
+        "Inside Out"
+      ]
+    },
+    {
+      "id": "G05",
+      "name": "Thriller request excluding gore",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "thriller",
+        "mystery",
+        "crime"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "Se7en",
+        "Inception",
+        "The Dark Knight",
+        "Shutter Island",
+        "Prisoners",
+        "Gone Girl",
+        "Parasite",
+        "The Matrix",
+        "John Wick",
+        "Zodiac"
+      ]
+    },
+    {
+      "id": "G06",
+      "name": "Comedy for tired evening",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 2,
+      "expected_hits": [
+        "comedy",
+        "funny",
+        "light"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "The Matrix",
+        "Inception",
+        "The Dark Knight",
+        "John Wick",
+        "The Lord of the Rings: The Fellowship of the Ring",
+        "Prisoners",
+        "Parasite",
+        "Mad Max: Fury Road",
+        "The Grand Budapest Hotel",
+        "The Wolf of Wall Street"
+      ]
+    },
+    {
+      "id": "G07",
+      "name": "High-rated classic movie",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "drama",
+        "classic",
+        "rated"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "The Dark Knight",
+        "The Matrix",
+        "The Notebook",
+        "The Lord of the Rings: The Fellowship of the Ring",
+        "Inception",
+        "Prisoners",
+        "Mad Max: Fury Road",
+        "Django Unchained",
+        "Gladiator",
+        "The Shawshank Redemption"
+      ]
+    },
+    {
+      "id": "G08",
+      "name": "Recent action movie",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "action",
+        "adventure",
+        "sci-fi"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "Mad Max: Fury Road",
+        "The Dark Knight",
+        "Gladiator",
+        "Spider-Man: Into the Spider-Verse",
+        "Inception",
+        "The Matrix",
+        "Django Unchained",
+        "Edge of Tomorrow",
+        "John Wick",
+        "Baby Driver"
+      ]
+    },
+    {
+      "id": "G09",
+      "name": "Emotional drama but not too dark",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "drama",
+        "heartfelt",
+        "emotional"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "The Dark Knight",
+        "The Matrix",
+        "Her",
+        "The Lord of the Rings: The Fellowship of the Ring",
+        "Good Will Hunting",
+        "Inception",
+        "Prisoners",
+        "The Notebook",
+        "Django Unchained",
+        "Gladiator"
+      ]
+    },
+    {
+      "id": "G10",
+      "name": "Balanced compromise between different tastes",
+      "passed": true,
+      "source": "dataset_fallback",
+      "result_count": 10,
+      "min_results": 3,
+      "expected_hits": [
+        "action",
+        "drama",
+        "sci-fi",
+        "mystery"
+      ],
+      "forbidden_hits": [],
+      "titles": [
+        "The Dark Knight",
+        "Mad Max: Fury Road",
+        "Inception",
+        "The Prestige",
+        "The Matrix",
+        "Blade Runner 2049",
+        "Django Unchained",
+        "Gladiator",
+        "Interstellar",
+        "Gone Girl"
+      ]
+    }
+  ]
+}

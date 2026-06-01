@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion as Motion, useMotionValue, useTransform } from 'framer-motion';
 
-const PLACEHOLDER_POSTER_URL = 'http://127.0.0.1:8000/static/placeholder-poster.svg';
+// Served from frontend/public — works in all environments
+const PLACEHOLDER_POSTER_URL = '/placeholder-poster.svg';
 
 function MovieCard({ movie, onSwipe }) {
   const x = useMotionValue(0);
@@ -38,7 +39,7 @@ function MovieCard({ movie, onSwipe }) {
         src={movie.poster_url || PLACEHOLDER_POSTER_URL}
         alt={movie.title}
         onError={(e) => {
-          if (e.currentTarget.src !== PLACEHOLDER_POSTER_URL) {
+          if (e.currentTarget.src !== window.location.origin + PLACEHOLDER_POSTER_URL) {
             e.currentTarget.src = PLACEHOLDER_POSTER_URL;
           }
         }}

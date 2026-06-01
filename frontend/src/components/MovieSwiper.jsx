@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import MovieCard from './MovieCard.jsx';
 
-const PLACEHOLDER_POSTER_URL = 'http://127.0.0.1:8000/static/placeholder-poster.svg';
+// Served from frontend/public — works in all environments
+const PLACEHOLDER_POSTER_URL = '/placeholder-poster.svg';
 
 function MovieSwiper({
   isReady,
@@ -114,7 +115,7 @@ function MovieSwiper({
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   alt={matchedMovie.title}
                   onError={(e) => {
-                    if (e.currentTarget.src !== PLACEHOLDER_POSTER_URL) {
+                    if (e.currentTarget.src !== window.location.origin + PLACEHOLDER_POSTER_URL) {
                       e.currentTarget.src = PLACEHOLDER_POSTER_URL;
                     }
                   }}

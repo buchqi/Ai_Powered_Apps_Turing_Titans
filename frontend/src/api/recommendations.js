@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000';
+
+// Exported so components can build URLs (e.g. static assets) without duplicating the base.
+export { API_BASE_URL };
 
 async function requestJson(path, options = {}) {
   let response;
@@ -9,7 +12,9 @@ async function requestJson(path, options = {}) {
       ...options,
     });
   } catch {
-    throw new Error('Backend is not running. Start the FastAPI server on http://127.0.0.1:8000 and try again.');
+    throw new Error(
+      'Backend is not running. Start the FastAPI server and try again.'
+    );
   }
 
   if (!response.ok) {

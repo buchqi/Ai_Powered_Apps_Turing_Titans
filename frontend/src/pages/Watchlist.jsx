@@ -6,7 +6,8 @@ import {
   removeFromWatchlist,
 } from '../api/recommendations.js';
 
-const PLACEHOLDER_POSTER_URL = 'http://127.0.0.1:8000/static/placeholder-poster.svg';
+// Served from frontend/public — works in all environments
+const PLACEHOLDER_POSTER_URL = '/placeholder-poster.svg';
 
 function Watchlist({ sessionId, onWatchlistChange }) {
   const [movies, setMovies] = useState([]);
@@ -47,15 +48,20 @@ function Watchlist({ sessionId, onWatchlistChange }) {
   };
 
   const handleClear = async () => {
-    if (!sessionId) return;
+    if (!sessionId || movies.length === 0) return;
 
-    let current = movies;
-    for (const movie of movies) {
-      const data = await removeFromWatchlist(sessionId, movie.id ?? movie.movie_id ?? movie.title);
-      current = data.watchlist ?? [];
+    try {
+      let current = movies;
+      for (const movie of movies) {
+        const data = await removeFromWatchlist(sessionId, movie.id ?? movie.movie_id ?? movie.title);
+        current = data.watchlist ?? [];
+      }
+      setMovies(current);
+      onWatchlistChange?.(current);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Could not clear watchlist. Please try again.');
     }
-    setMovies(current);
-    onWatchlistChange?.(current);
   };
 
   return (
@@ -125,7 +131,7 @@ function Watchlist({ sessionId, onWatchlistChange }) {
                 src={movie.poster_url || PLACEHOLDER_POSTER_URL}
                 alt={movie.title}
                 onError={(e) => {
-                  if (e.currentTarget.src !== PLACEHOLDER_POSTER_URL) {
+                  if (e.currentTarget.src !== window.location.origin + PLACEHOLDER_POSTER_URL) {
                     e.currentTarget.src = PLACEHOLDER_POSTER_URL;
                   }
                 }}

@@ -11,7 +11,7 @@ const FEATURES = [
   {
     icon: '🤖',
     title: 'AI Recommendation Engine',
-    desc: 'A RAG pipeline retrieves candidates from a curated database, then Claude ranks and explains each match.',
+    desc: 'A RAG pipeline retrieves candidates from a curated database, then AI ranks and explains each match.',
   },
   {
     icon: '⚖️',
@@ -25,7 +25,31 @@ const FEATURES = [
   },
 ];
 
-function About() {
+const TEAM = [
+  {
+    name: 'Giorgi Tkebuchava',
+    role: 'Backend & AI Integration',
+    description: 'AI logic, API integration, scoring system, and reliability. The engine that makes it all work.',
+    github: 'buchqi',
+    emoji: '⚙️',
+  },
+  {
+    name: 'Gela Lomidze',
+    role: 'Frontend & UI',
+    description: 'User interface, UX flow, swipe system, and responsiveness. What you see is what Gela built.',
+    github: 'gelalomidze',
+    emoji: '🎨',
+  },
+  {
+    name: 'Ivane Urjumelashvili',
+    role: 'Database & Data Governance',
+    description: 'Data modeling, vector storage, privacy, and data integrity. The foundation everything runs on.',
+    github: 'ivaneu',
+    emoji: '🗄️',
+  },
+];
+
+export default function About() {
   return (
     <main className="about-page">
       <Motion.div
@@ -33,19 +57,7 @@ function About() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <p
-          style={{
-            fontSize: '0.68rem',
-            letterSpacing: '3px',
-            color: 'var(--accent-gold)',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '14px',
-          }}
-        >
-          Turing Titans · AI Powered Apps
-        </p>
-
+        <p className="about-page__eyebrow">Turing Titans · AI Powered Apps · Spring 2026</p>
         <h1 className="about-page__title">About Film Adviser</h1>
         <p className="about-page__lead">
           A couples and friends movie matcher that uses AI to find films everyone
@@ -74,9 +86,8 @@ function About() {
         <p style={{ marginBottom: '2vh' }}>
           Each user answers five quick questions covering mood, energy, genre, and
           dealbreakers. The backend merges both profiles and queries a vector database
-          of films using a RAG (Retrieval-Augmented Generation) pipeline. Claude then
-          ranks the candidates and generates a plain-English explanation for every
-          recommendation.
+          of films using a RAG pipeline. The AI then ranks the candidates and generates
+          a plain-English explanation for every recommendation.
         </p>
 
         <div className="about-features">
@@ -103,20 +114,47 @@ function About() {
       <section className="about-section">
         <p className="about-section__label">The Team</p>
         <h2 className="about-section__heading">Turing Titans</h2>
-        <p>
-          Built as part of an AI-powered applications course. The team covers
-          frontend, backend, AI services, and vector database integration — each
-          working in parallel on a shared API contract.
+        <p style={{ marginBottom: '3vh' }}>
+          Built as part of an AI-powered applications course at Kutaisi International University.
+          Three people, one mission: make movie night actually easy.
         </p>
+
+        <div className="team-grid">
+          {TEAM.map((member, i) => (
+            <Motion.div
+              key={member.name}
+              className="team-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.12 }}
+              viewport={{ once: true }}
+            >
+              <div className="team-card__avatar">{member.emoji}</div>
+              <h3 className="team-card__name">{member.name}</h3>
+              <p className="team-card__role">{member.role}</p>
+              <p className="team-card__desc">{member.description}</p>
+              <a
+                href={`https://github.com/${member.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="team-card__github"
+              >
+                @{member.github}
+              </a>
+            </Motion.div>
+          ))}
+        </div>
       </section>
 
       <div style={{ marginTop: '4vh' }}>
-        <Link to="/match" className="btn-gold">
-          Try Film Adviser →
-        </Link>
+        <Link to="/match" className="btn-gold">Try Film Adviser →</Link>
       </div>
+
+      {/* Footer */}
+      <footer className="site-footer">
+        <p>© 2026 Turing Titans · Film Adviser. All rights reserved.</p>
+        <p>CS-AI-2026 · Kutaisi International University</p>
+      </footer>
     </main>
   );
 }
-
-export default About;

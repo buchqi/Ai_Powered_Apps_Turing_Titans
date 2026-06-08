@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion as Motion } from 'framer-motion';
+import { AuthError } from '../api/client.js';
 import {
   getWatchlist,
   removeFromWatchlist,
 } from '../api/recommendations.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Served from frontend/public — works in all environments
 const PLACEHOLDER_POSTER_URL = '/placeholder-poster.svg';
 
 function Watchlist({ sessionId, onWatchlistChange }) {
+  const { user, logout } = useAuth();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
 
   const getPrimaryGenre = (movie) => (
     Array.isArray(movie.genres) ? movie.genres[0] : movie.genres
   );
-  const visibleMovies = sessionId ? movies : [];
+  const isLoggedIn = Boolean(user && !user.isGuest);
+  const visibleMovies = isLoggedIn || sessionId ? movies : [];
 
   useEffect(() => {
-    if (!sessionId) {
+    if (!isLoggedIn && !sessionId) {
+      setMovies([]);
+      onWatchlistChange?.([]);
       return;
     }
 
@@ -30,36 +36,53 @@ function Watchlist({ sessionId, onWatchlistChange }) {
       })
       .catch((err) => {
         console.error(err);
+        if (err instanceof AuthError) {
+          logout();
+          setMovies([]);
+          onWatchlistChange?.([]);
+          setError('Your sign-in expired. Continue as guest or sign in again.');
+          return;
+        }
         setError(err.message || 'Could not load watchlist.');
       });
-  }, [onWatchlistChange, sessionId]);
+  }, [isLoggedIn, logout, onWatchlistChange, sessionId]);
 
   const handleRemove = async (movie) => {
-    if (!sessionId) return;
+    if (!isLoggedIn && !sessionId) return;
 
     try {
-      const data = await removeFromWatchlist(sessionId, movie.id ?? movie.movie_id ?? movie.title);
+      const data = await removeFromWatchlist(sessionId, movie.movie_id ?? movie.id ?? movie.title);
       setMovies(data.watchlist ?? []);
       onWatchlistChange?.(data.watchlist ?? []);
     } catch (err) {
       console.error(err);
+      if (err instanceof AuthError) {
+        logout();
+        setError('Your sign-in expired. Continue as guest or sign in again.');
+        return;
+      }
       setError(err.message || 'Could not remove this movie.');
     }
   };
 
   const handleClear = async () => {
-    if (!sessionId || movies.length === 0) return;
+    if ((!isLoggedIn && !sessionId) || movies.length === 0) return;
 
     try {
       let current = movies;
       for (const movie of movies) {
-        const data = await removeFromWatchlist(sessionId, movie.id ?? movie.movie_id ?? movie.title);
+        const data = await removeFromWatchlist(sessionId, movie.movie_id ?? movie.id ?? movie.title);
         current = data.watchlist ?? [];
       }
       setMovies(current);
       onWatchlistChange?.(current);
     } catch (err) {
       console.error(err);
+      if (err instanceof AuthError) {
+        logout();
+        setError('Your sign-in expired. Continue as guest or sign in again.');
+        return;
+      }
       setError(err.message || 'Could not clear watchlist. Please try again.');
     }
   };
@@ -120,7 +143,7 @@ function Watchlist({ sessionId, onWatchlistChange }) {
         <div className="watchlist-grid">
           {visibleMovies.map((movie, i) => (
             <Motion.div
-              key={movie.id ?? movie.movie_id ?? movie.title}
+              key={movie.movie_id ?? movie.id ?? movie.title}
               className="watchlist-card"
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}

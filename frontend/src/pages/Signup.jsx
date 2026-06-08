@@ -17,13 +17,13 @@ export default function Signup() {
       setError("Passwords don't match.");
       return;
     }
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (form.password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
     setLoading(true);
     try {
-      signup({ username: form.username, email: form.email, password: form.password });
+      await signup({ username: form.username, email: form.email, password: form.password });
       navigate('/match');
     } catch (err) {
       setError(err.message);
@@ -70,13 +70,14 @@ export default function Signup() {
           </label>
 
           <label className="auth-label">
-            Email <span className="auth-label__hint">(for recovery only, not verified)</span>
+            Email
             <input
               className="auth-input"
               type="email"
               value={form.email}
               onChange={set('email')}
               placeholder="you@example.com"
+              required
             />
           </label>
 
@@ -87,7 +88,7 @@ export default function Signup() {
               type="password"
               value={form.password}
               onChange={set('password')}
-              placeholder="min. 6 characters"
+              placeholder="min. 8 characters"
               required
             />
           </label>

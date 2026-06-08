@@ -3,3 +3,5 @@ sentence-transformers
 fastapi
 uvicorn
 pydantic
+passlib[bcrypt]
+python-jose[cryptography]

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 export default function Login() {
   const { login, loginAsGuest } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      login(form);
+      await login(form);
       navigate('/match');
     } catch (err) {
       setError(err.message);
@@ -45,13 +45,13 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
-            Username
+            Email
             <input
               className="auth-input"
-              type="text"
-              value={form.username}
-              onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-              placeholder="your_username"
+              type="email"
+              value={form.email}
+              onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+              placeholder="you@example.com"
               required
               autoFocus
             />

@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PreferenceCard from '../components/PreferenceCard.jsx';
 import MovieSwiper from '../components/MovieSwiper.jsx';
+import { AuthError } from '../api/client.js';
 import {
   addToWatchlist,
   createRecommendationSession,
   getMoreMovies,
 } from '../api/recommendations.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const BATCH_SIZE = 10;
 
 function Home({ onSessionChange, onWatchlistChange }) {
+  const { logout } = useAuth();
   const [prefA, setPrefA] = useState(null);
   const [prefB, setPrefB] = useState(null);
   const [quizResetId, setQuizResetId] = useState(0);
@@ -33,27 +36,48 @@ function Home({ onSessionChange, onWatchlistChange }) {
     onSessionChange?.(null);
     onWatchlistChange?.([]);
 
-    createRecommendationSession({ userA: prefA, userB: prefB }, BATCH_SIZE)
-      .then((data) => {
+    async function startSession() {
+      const preferences = { userA: prefA, userB: prefB };
+
+      try {
+        let data;
+        try {
+          data = await createRecommendationSession(preferences, BATCH_SIZE);
+        } catch (err) {
+          if (!(err instanceof AuthError)) throw err;
+          logout();
+          data = await createRecommendationSession(preferences, BATCH_SIZE);
+        }
+
         setSessionId(data.session_id);
         onSessionChange?.(data.session_id);
         setMovies(data.movies ?? []);
         setHasMore(Boolean(data.has_more));
         setIsAnalyzing(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
         setError(err.message || 'Engine offline or failed to fetch matches.');
         setIsAnalyzing(false);
-      });
-  }, [onSessionChange, onWatchlistChange, prefA, prefB]);
+      }
+    }
+
+    startSession();
+  }, [logout, onSessionChange, onWatchlistChange, prefA, prefB]);
 
   const handleLoadMore = useCallback(async () => {
     if (!sessionId || !hasMore || isLoadingMore) return;
 
     setIsLoadingMore(true);
     try {
-      const data = await getMoreMovies(sessionId, BATCH_SIZE);
+      let data;
+      try {
+        data = await getMoreMovies(sessionId, BATCH_SIZE);
+      } catch (err) {
+        if (!(err instanceof AuthError)) throw err;
+        logout();
+        setError('Your sign-in expired. Continuing in guest mode with your current matches.');
+        data = await getMoreMovies(sessionId, BATCH_SIZE);
+      }
       setMovies((currentMovies) => [...currentMovies, ...(data.movies ?? [])]);
       setHasMore(Boolean(data.has_more));
     } catch (err) {
@@ -62,13 +86,21 @@ function Home({ onSessionChange, onWatchlistChange }) {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [hasMore, isLoadingMore, sessionId]);
+  }, [hasMore, isLoadingMore, logout, sessionId]);
 
   const handleLike = async (movie) => {
     if (!sessionId) return;
 
     try {
-      const data = await addToWatchlist(sessionId, movie);
+      let data;
+      try {
+        data = await addToWatchlist(sessionId, movie);
+      } catch (err) {
+        if (!(err instanceof AuthError)) throw err;
+        logout();
+        setError('Your sign-in expired. Saved this movie to the guest watchlist instead.');
+        data = await addToWatchlist(sessionId, movie);
+      }
       onWatchlistChange?.(data.watchlist ?? []);
     } catch (err) {
       console.error(err);

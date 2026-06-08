@@ -1,59 +1,77 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import {
+  authLogin,
+  authRegister,
+  getCurrentUser,
+  logout as clearAuthSession,
+} from '../api/auth.js';
+import { AuthError } from '../api/client.js';
+import { clearAccessToken } from '../lib/token-storage.js';
 
 const AuthContext = createContext(null);
 
-const USERS_KEY    = 'fa_users';
-const SESSION_KEY  = 'fa_session';
+const GUEST_SESSION_KEY = 'fa_guest_session';
 
-function readUsers() {
-  try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
-  catch { return []; }
-}
-function writeUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
-
-function readSession() {
-  try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); }
+function readGuestSession() {
+  try { return JSON.parse(sessionStorage.getItem(GUEST_SESSION_KEY)); }
   catch { return null; }
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(readSession);
+  const [user, setUser] = useState(readGuestSession);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  function _persist(session) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    setUser(session);
-  }
+  useEffect(() => {
+    let isMounted = true;
 
-  function signup({ username, email, password }) {
-    const users = readUsers();
-    if (users.find(u => u.username.toLowerCase() === username.toLowerCase()))
-      throw new Error('Username already taken.');
-    if (email && users.find(u => u.email === email))
-      throw new Error('Email already registered.');
-    const record = { username, email, password, createdAt: Date.now() };
-    writeUsers([...users, record]);
-    _persist({ username, email, isGuest: false });
-  }
+    getCurrentUser()
+      .then((currentUser) => {
+        if (!isMounted || !currentUser) return;
+        sessionStorage.removeItem(GUEST_SESSION_KEY);
+        setUser({ ...currentUser, isGuest: false });
+      })
+      .catch((err) => {
+        if (err instanceof AuthError) {
+          clearAccessToken();
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsAuthLoading(false);
+      });
 
-  function login({ username, password }) {
-    const found = readUsers().find(
-      u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
-    );
-    if (!found) throw new Error('Wrong username or password.');
-    _persist({ username: found.username, email: found.email, isGuest: false });
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  function loginAsGuest() {
-    _persist({ username: 'Guest', email: null, isGuest: true });
-  }
+  const login = useCallback(async ({ email, password }) => {
+    await authLogin({ email, password });
+    const currentUser = await getCurrentUser();
+    sessionStorage.removeItem(GUEST_SESSION_KEY);
+    setUser({ ...currentUser, isGuest: false });
+    return currentUser;
+  }, []);
 
-  function logout() {
-    sessionStorage.removeItem(SESSION_KEY);
+  const signup = useCallback(async ({ username, email, password }) => {
+    await authRegister({ username, email, password });
+    return login({ email, password });
+  }, [login]);
+
+  const loginAsGuest = useCallback(() => {
+    clearAuthSession();
+    const guest = { username: 'Guest', email: null, isGuest: true };
+    sessionStorage.setItem(GUEST_SESSION_KEY, JSON.stringify(guest));
+    setUser(guest);
+  }, []);
+
+  const logout = useCallback(() => {
+    clearAuthSession();
+    sessionStorage.removeItem(GUEST_SESSION_KEY);
     setUser(null);
-  }
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, loginAsGuest, logout }}>
+    <AuthContext.Provider value={{ user, signup, login, loginAsGuest, logout, isAuthLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from api.auth import router as auth_router
+from api.user_recommendations import router as user_recommendations_router
+from api.user_watchlist import router as user_watchlist_router
 from services.recommendation_service import (
     add_movie_to_watchlist,
     create_recommendation_session,
@@ -12,6 +15,9 @@ from services.recommendation_service import (
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(auth_router)
+app.include_router(user_recommendations_router)
+app.include_router(user_watchlist_router)
 
 app.add_middleware(
     CORSMiddleware,

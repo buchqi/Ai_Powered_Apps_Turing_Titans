@@ -1,18 +1,17 @@
-version: "3.9"
-
 services:
   backend:
     build: ./backend
     ports:
       - "8000:8000"
-    env_file: .env
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
-      DATABASE_URL: ${DATABASE_URL:-sqlite:///./film_adviser.db}
+      PORT: 8000
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/film_adviser.db}
       SECRET_KEY: ${SECRET_KEY:-change-this-in-production}
     volumes:
-      # Persist ChromaDB embeddings and SQLite DB across restarts
-      - backend_data:/app/vector_db
-      - backend_db:/app
+      - backend_db:/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 15s
@@ -32,5 +31,4 @@ services:
         condition: service_healthy
 
 volumes:
-  backend_data:
   backend_db:

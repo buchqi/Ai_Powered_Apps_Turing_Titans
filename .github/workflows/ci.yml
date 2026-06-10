@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Backend ─────────────────────────────────────────────────────────────────
+  backend:
+    name: Backend — lint & health check
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Syntax check (all .py files)
+        run: python -m py_compile $(find . -name "*.py" | head -30)
+
+      - name: Start backend in background
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-test-secret-not-used-in-prod
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'placeholder' }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY || 'placeholder' }}
+        run: |
+          alembic upgrade head
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          # Wait until the server is up (max 30s)
+          for i in $(seq 1 10); do
+            sleep 3
+            curl -sf http://localhost:8000/health && break
+          done
+
+      - name: Health check — must respond under 500ms
+        run: |
+          LATENCY=$(curl -sf -o /dev/null -w "%{time_total}" http://localhost:8000/health)
+          echo "Health check latency: ${LATENCY}s"
+          python3 -c "
+          latency = float('$LATENCY')
+          assert latency < 0.5, f'Health check took {latency:.3f}s — exceeds 500ms gate'
+          print(f'✅ Health check passed in {latency*1000:.0f}ms')
+          "
+
+  # ── Frontend ─────────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend — build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          VITE_API_URL: http://localhost:8000
+        run: npm run build
+
+      - name: Verify build output exists
+        run: test -f dist/index.html
+
+  # ── Eval ─────────────────────────────────────────────────────────────────────
+  eval:
+    name: Golden set evaluation
+    runs-on: ubuntu-latest
+    needs: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install backend deps
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Start backend
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: ci-test-secret
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'placeholder' }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY || 'placeholder' }}
+        run: |
+          alembic upgrade head
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          for i in $(seq 1 10); do sleep 3; curl -sf http://localhost:8000/health && break; done
+
+      - name: Run golden set
+        run: python eval/run_golden_set.py
+
+      - name: Fail if score below 100%
+        run: |
+          python3 -c "
+          import json, glob
+          results = sorted(glob.glob('eval/results/evaluation_result_*.json'))
+          latest = json.load(open(results[-1]))
+          score = latest['score']
+          passed = latest['passed']
+          total = latest['total']
+          print(f'Score: {score:.0%} ({passed}/{total})')
+          assert score == 1.0, f'Eval score {score:.0%} is below 100% — fix failing cases before merging'
+          print('✅ All golden set cases passed')
+          "

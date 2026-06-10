@@ -1,7 +1,13 @@
 chromadb
 sentence-transformers
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
+pydantic-settings
 passlib[bcrypt]
 python-jose[cryptography]
+sqlalchemy
+alembic
+python-dotenv
+email-validator
+httpx

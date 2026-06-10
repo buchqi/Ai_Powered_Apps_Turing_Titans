@@ -1,0 +1,406 @@
+{
+  "summary": {
+    "timestamp": "2026-06-10T13:51:46.082024+00:00",
+    "mode": "fallback",
+    "target": "D:\\Portfolio\\Ai_Powered_App_Turing_Titans\\Ai_Powered_Apps_Turing_Titans\\backend\\data\\movies.json",
+    "concurrent_users": 8,
+    "total_requests": 48,
+    "duration_seconds": 0.028,
+    "throughput_rps": 1704.17,
+    "average_latency_ms": 3.07,
+    "p50_latency_ms": 2.99,
+    "p90_latency_ms": 4.15,
+    "p95_latency_ms": 4.48,
+    "p99_latency_ms": 5.02,
+    "peak_latency_ms": 5.02,
+    "error_rate": 0.0,
+    "successful_requests": 48,
+    "failed_requests": 0
+  },
+  "results": [
+    {
+      "case_id": "G01",
+      "mode": "fallback",
+      "latency_ms": 4.48,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "mode": "fallback",
+      "latency_ms": 5.02,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "mode": "fallback",
+      "latency_ms": 1.23,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "mode": "fallback",
+      "latency_ms": 2.34,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "mode": "fallback",
+      "latency_ms": 1.52,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "mode": "fallback",
+      "latency_ms": 1.4,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "mode": "fallback",
+      "latency_ms": 2.22,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "mode": "fallback",
+      "latency_ms": 2.06,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "mode": "fallback",
+      "latency_ms": 2.34,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "mode": "fallback",
+      "latency_ms": 1.51,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "mode": "fallback",
+      "latency_ms": 2.18,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "mode": "fallback",
+      "latency_ms": 3.82,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G13",
+      "mode": "fallback",
+      "latency_ms": 2.83,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G14",
+      "mode": "fallback",
+      "latency_ms": 2.43,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G15",
+      "mode": "fallback",
+      "latency_ms": 2.22,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G16",
+      "mode": "fallback",
+      "latency_ms": 3.03,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G17",
+      "mode": "fallback",
+      "latency_ms": 3.76,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G01",
+      "mode": "fallback",
+      "latency_ms": 4.12,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "mode": "fallback",
+      "latency_ms": 2.89,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "mode": "fallback",
+      "latency_ms": 3.35,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "mode": "fallback",
+      "latency_ms": 2.06,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "mode": "fallback",
+      "latency_ms": 3.27,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "mode": "fallback",
+      "latency_ms": 3.43,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "mode": "fallback",
+      "latency_ms": 2.84,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "mode": "fallback",
+      "latency_ms": 3.71,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "mode": "fallback",
+      "latency_ms": 2.99,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "mode": "fallback",
+      "latency_ms": 2.41,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "mode": "fallback",
+      "latency_ms": 3.38,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "mode": "fallback",
+      "latency_ms": 2.7,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G13",
+      "mode": "fallback",
+      "latency_ms": 4.37,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G14",
+      "mode": "fallback",
+      "latency_ms": 2.65,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G15",
+      "mode": "fallback",
+      "latency_ms": 2.75,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G16",
+      "mode": "fallback",
+      "latency_ms": 2.82,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G17",
+      "mode": "fallback",
+      "latency_ms": 3.56,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G01",
+      "mode": "fallback",
+      "latency_ms": 4.94,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "mode": "fallback",
+      "latency_ms": 3.78,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "mode": "fallback",
+      "latency_ms": 2.91,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "mode": "fallback",
+      "latency_ms": 4.15,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "mode": "fallback",
+      "latency_ms": 2.92,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "mode": "fallback",
+      "latency_ms": 3.76,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "mode": "fallback",
+      "latency_ms": 3.68,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "mode": "fallback",
+      "latency_ms": 3.69,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "mode": "fallback",
+      "latency_ms": 3.46,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "mode": "fallback",
+      "latency_ms": 3.44,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "mode": "fallback",
+      "latency_ms": 3.36,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "mode": "fallback",
+      "latency_ms": 3.56,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G13",
+      "mode": "fallback",
+      "latency_ms": 2.96,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G14",
+      "mode": "fallback",
+      "latency_ms": 3.1,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    }
+  ]
+}

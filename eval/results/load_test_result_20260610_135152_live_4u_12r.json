@@ -1,0 +1,118 @@
+{
+  "summary": {
+    "timestamp": "2026-06-10T13:51:52.219699+00:00",
+    "mode": "live",
+    "target": "http://127.0.0.1:8000/recommend/session",
+    "concurrent_users": 4,
+    "total_requests": 12,
+    "duration_seconds": 6.164,
+    "throughput_rps": 1.95,
+    "average_latency_ms": 2043.18,
+    "p50_latency_ms": 2039.47,
+    "p90_latency_ms": 2068.76,
+    "p95_latency_ms": 2069.06,
+    "p99_latency_ms": 2069.06,
+    "peak_latency_ms": 2069.06,
+    "error_rate": 1.0,
+    "successful_requests": 0,
+    "failed_requests": 12
+  },
+  "results": [
+    {
+      "case_id": "G01",
+      "mode": "live",
+      "latency_ms": 2069.06,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G02",
+      "mode": "live",
+      "latency_ms": 2068.76,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G03",
+      "mode": "live",
+      "latency_ms": 2030.67,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G04",
+      "mode": "live",
+      "latency_ms": 2012.9,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G05",
+      "mode": "live",
+      "latency_ms": 2037.06,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G06",
+      "mode": "live",
+      "latency_ms": 2052.85,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G07",
+      "mode": "live",
+      "latency_ms": 2052.27,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G08",
+      "mode": "live",
+      "latency_ms": 2052.72,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G09",
+      "mode": "live",
+      "latency_ms": 2039.47,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G10",
+      "mode": "live",
+      "latency_ms": 2039.74,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G11",
+      "mode": "live",
+      "latency_ms": 2039.27,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "case_id": "G12",
+      "mode": "live",
+      "latency_ms": 2023.35,
+      "success": false,
+      "result_count": 0,
+      "error": "URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    }
+  ]
+}

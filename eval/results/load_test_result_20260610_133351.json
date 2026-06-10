@@ -1,0 +1,402 @@
+{
+  "summary": {
+    "timestamp": "2026-06-10T13:33:51.998041+00:00",
+    "concurrent_users": 8,
+    "total_requests": 48,
+    "duration_seconds": 25.036,
+    "throughput_rps": 1.92,
+    "average_response_time_ms": 4171.87,
+    "peak_response_time_ms": 11698.33,
+    "p95_response_time_ms": 8777.91,
+    "error_rate": 0.0,
+    "source_counts": {
+      "dataset_fallback": 48
+    }
+  },
+  "results": [
+    {
+      "case_id": "G01",
+      "source": "dataset_fallback",
+      "latency_ms": 4541.68,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "source": "dataset_fallback",
+      "latency_ms": 4542.28,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "source": "dataset_fallback",
+      "latency_ms": 4542.1,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "source": "dataset_fallback",
+      "latency_ms": 4542.15,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "source": "dataset_fallback",
+      "latency_ms": 4542.43,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "source": "dataset_fallback",
+      "latency_ms": 4547.22,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "source": "dataset_fallback",
+      "latency_ms": 4547.29,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "source": "dataset_fallback",
+      "latency_ms": 4541.94,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "source": "dataset_fallback",
+      "latency_ms": 5.71,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "source": "dataset_fallback",
+      "latency_ms": 5.22,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "source": "dataset_fallback",
+      "latency_ms": 5.73,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "source": "dataset_fallback",
+      "latency_ms": 5.26,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G01",
+      "source": "dataset_fallback",
+      "latency_ms": 4.78,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "source": "dataset_fallback",
+      "latency_ms": 5.46,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "source": "dataset_fallback",
+      "latency_ms": 2890.2,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "source": "dataset_fallback",
+      "latency_ms": 2893.97,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "source": "dataset_fallback",
+      "latency_ms": 11698.33,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "source": "dataset_fallback",
+      "latency_ms": 5823.53,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "source": "dataset_fallback",
+      "latency_ms": 5826.78,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "source": "dataset_fallback",
+      "latency_ms": 8752.61,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "source": "dataset_fallback",
+      "latency_ms": 8748.58,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "source": "dataset_fallback",
+      "latency_ms": 8748.16,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "source": "dataset_fallback",
+      "latency_ms": 5859.08,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "source": "dataset_fallback",
+      "latency_ms": 5855.38,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G01",
+      "source": "dataset_fallback",
+      "latency_ms": 5873.99,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "source": "dataset_fallback",
+      "latency_ms": 5871.85,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "source": "dataset_fallback",
+      "latency_ms": 2949.45,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "source": "dataset_fallback",
+      "latency_ms": 2949.04,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "source": "dataset_fallback",
+      "latency_ms": 2949.57,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "source": "dataset_fallback",
+      "latency_ms": 2949.44,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "source": "dataset_fallback",
+      "latency_ms": 2946.12,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "source": "dataset_fallback",
+      "latency_ms": 5.09,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "source": "dataset_fallback",
+      "latency_ms": 2936.4,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "source": "dataset_fallback",
+      "latency_ms": 8782.15,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "source": "dataset_fallback",
+      "latency_ms": 5867.23,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "source": "dataset_fallback",
+      "latency_ms": 2932.06,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G01",
+      "source": "dataset_fallback",
+      "latency_ms": 5870.26,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G02",
+      "source": "dataset_fallback",
+      "latency_ms": 5870.59,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G03",
+      "source": "dataset_fallback",
+      "latency_ms": 5866.67,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G04",
+      "source": "dataset_fallback",
+      "latency_ms": 8777.91,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G05",
+      "source": "dataset_fallback",
+      "latency_ms": 2938.59,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G06",
+      "source": "dataset_fallback",
+      "latency_ms": 5849.98,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G07",
+      "source": "dataset_fallback",
+      "latency_ms": 2918.37,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G08",
+      "source": "dataset_fallback",
+      "latency_ms": 2918.38,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G09",
+      "source": "dataset_fallback",
+      "latency_ms": 2915.8,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G10",
+      "source": "dataset_fallback",
+      "latency_ms": 2915.38,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G11",
+      "source": "dataset_fallback",
+      "latency_ms": 2915.22,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    },
+    {
+      "case_id": "G12",
+      "source": "dataset_fallback",
+      "latency_ms": 4.32,
+      "success": true,
+      "result_count": 5,
+      "error": null
+    }
+  ]
+}

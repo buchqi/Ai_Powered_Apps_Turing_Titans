@@ -1,7 +1,7 @@
 import re
 import uuid
 
-from services.ai_service import add_ai_explanations
+from services.ai_service import add_ai_explanations, sanitize_user_facing_text
 
 
 sessions: dict[str, dict] = {}
@@ -39,7 +39,9 @@ def _as_text(value) -> str:
     if value is None:
         return ""
     if isinstance(value, list):
-        return " ".join(str(item).strip() for item in value if str(item).strip())
+        return " ".join(_as_text(item) for item in value if _as_text(item))
+    if isinstance(value, dict):
+        return " ".join(_as_text(item) for item in value.values() if _as_text(item))
     return str(value).strip()
 
 
@@ -236,6 +238,51 @@ def filter_movies(preferences: dict, candidates: list[dict]) -> list[dict]:
     return filtered
 
 
+def _sanitize_movie_output(value):
+    if isinstance(value, str):
+        return sanitize_user_facing_text(value)
+    if isinstance(value, list):
+        return [_sanitize_movie_output(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _sanitize_movie_output(item) for key, item in value.items()}
+    return value
+
+
+def _with_closest_match_reason(movie: dict) -> dict:
+    updated = dict(movie)
+    existing_reason = str(updated.get("match_reason", "")).strip()
+    closest_reason = (
+        "Closest match: your constraints were very restrictive, so this recommendation "
+        "relaxes the least important filters while still aiming for a watchable movie option."
+    )
+    updated["match_reason"] = f"{existing_reason} {closest_reason}".strip()
+    return updated
+
+
+def _needs_closest_matches(preferences: dict, filtered_candidates: list[dict], batch_size: int) -> bool:
+    avoided_genres = _collect_avoided_genres(preferences)
+    query = _preferences_to_query(preferences).lower()
+    restrictive_terms = ("impossible", "only", "exact", "shorter than", "under 40", "none")
+    return (
+        len(filtered_candidates) < max(3, min(batch_size, 5))
+        or len(avoided_genres) >= 6
+        or any(term in query for term in restrictive_terms)
+    )
+
+
+def _closest_match_candidates(preferences: dict, original_candidates: list[dict], batch_size: int) -> list[dict]:
+    from services.rag_service import search_movies
+
+    desired_count = max(3, batch_size)
+    candidates = append_unique_movies([], original_candidates)
+
+    if len(candidates) < desired_count:
+        broad_candidates = search_movies("movie drama comedy action adventure family", limit=50)
+        candidates = append_unique_movies(candidates, broad_candidates)
+
+    return [_with_closest_match_reason(movie) for movie in candidates[:desired_count]]
+
+
 def _has_unseen_movies(session: dict) -> bool:
     seen_movie_ids = session["seen_movie_ids"]
     return any(
@@ -252,12 +299,22 @@ def create_recommendation_session(preferences: dict, batch_size: int = 10) -> di
     query = _preferences_to_query(preferences)
     original_candidates = search_movies(query, limit=50)
     filtered_candidates = filter_movies(preferences, original_candidates)
+    closest_match_mode = _needs_closest_matches(preferences, filtered_candidates, safe_batch_size)
+    if closest_match_mode:
+        filtered_candidates = _closest_match_candidates(
+            preferences,
+            append_unique_movies(filtered_candidates, original_candidates),
+            safe_batch_size,
+        )
     candidates = add_ai_explanations(
         preferences,
         append_unique_movies([], filtered_candidates),
         session_id=session_id,
         endpoint="/recommend/session",
     )
+    if closest_match_mode:
+        candidates = [_with_closest_match_reason(movie) for movie in candidates]
+    candidates = [_sanitize_movie_output(movie) for movie in candidates]
 
     first_batch = candidates[:safe_batch_size]
     seen_movie_ids = {

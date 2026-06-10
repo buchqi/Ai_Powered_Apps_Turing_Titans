@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import time
 from typing import Any, Optional
 
@@ -17,6 +18,27 @@ MODEL_NAME = "gemini-3-flash-preview"
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 DEFAULT_TIMEOUT_SECONDS = 12
 DEFAULT_MAX_RETRIES = 2
+SENSITIVE_USER_FACING_TERMS = (
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "developer message",
+    "system prompt",
+    "secret key",
+    "api key",
+    "secret",
+)
+
+
+def sanitize_user_facing_text(text: str) -> str:
+    sanitized = text
+    for term in SENSITIVE_USER_FACING_TERMS:
+        sanitized = re.sub(
+            re.escape(term),
+            "[redacted]",
+            sanitized,
+            flags=re.IGNORECASE,
+        )
+    return sanitized
 
 
 def _format_preferences(preferences: dict) -> str:
@@ -39,7 +61,8 @@ def _format_preferences(preferences: dict) -> str:
             continue
         parts.append(f"{key}: {value}")
 
-    return "; ".join(parts) if parts else "No explicit preferences provided."
+    formatted = "; ".join(parts) if parts else "No explicit preferences provided."
+    return sanitize_user_facing_text(formatted)
 
 
 def _as_text(value) -> str:
@@ -242,7 +265,7 @@ def _safe_call_llm(preferences: dict, movie: dict, session_id: str, endpoint: st
             return None
 
         answer = (response.choices[0].message.content or "").strip()
-        answer = " ".join(answer.split())
+        answer = sanitize_user_facing_text(" ".join(answer.split()))
         return answer or None
 
     result = call_with_resilience(
@@ -282,12 +305,12 @@ def _movie_specific_fallback_reason(preferences: dict, movie: dict) -> str:
 
     conflicting = [genre for genre in avoided if genre in lower_genres]
     if conflicting:
-        return (
+        return sanitize_user_facing_text(
             f"{title} may be a weaker match because it includes {', '.join(conflicting)}, "
             f"which appears in your avoided genres. Its {duration} runtime may also affect compatibility."
         )
 
-    return (
+    return sanitize_user_facing_text(
         f"{title} is a stronger match for your preferences because its {genres} tone and pacing align well overall. "
         f"The {duration} runtime and {rating} rating make it a practical option for both users."
     )

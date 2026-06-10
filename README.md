@@ -249,6 +249,35 @@ State fields:
 - `watchlist`: session-scoped liked movies.
 - `fallback_triggered`: records whether LLM fallback behavior was used.
 
+---
+
+## Evaluation
+
+Evaluation artifacts live in `eval/`.
+
+Golden-set evaluation:
+
+```bash
+python eval/run_golden_set.py --mode live --label demo_live
+python eval/run_golden_set.py --mode fallback --label demo_fallback
+python eval/run_golden_set.py --mode auto --label demo_auto
+```
+
+Load testing:
+
+```bash
+python eval/run_load_test.py --mode live --users 8 --requests 48 --label demo_live_load
+python eval/run_load_test.py --mode fallback --users 8 --requests 48 --label demo_fallback_load
+```
+
+Mode meanings:
+
+- `live` calls the FastAPI endpoint and must not silently fall back.
+- `fallback` uses deterministic local scoring over `backend/data/movies.json`.
+- `auto` tries live, then service imports, then fallback, and records the selected mode.
+
+Live evaluation expects the backend to expose `GET /health` and `POST /recommend/session`.
+
 Irreversible action map:
 
 | Action | Reversible? | Risk | Protection |

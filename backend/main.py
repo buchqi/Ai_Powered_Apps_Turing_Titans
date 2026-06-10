@@ -18,18 +18,22 @@ from services.recommendation_service import (
 
 app = FastAPI(title="Film Adviser API", version="1.0.0")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.include_router(auth_router)
-app.include_router(user_recommendations_router)
-app.include_router(user_watchlist_router)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://joyful-intuition-production-606c.up.railway.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(auth_router)
+app.include_router(user_recommendations_router)
+app.include_router(user_watchlist_router)
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

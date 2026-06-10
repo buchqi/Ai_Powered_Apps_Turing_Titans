@@ -87,6 +87,97 @@ Opens at **http://localhost:3000**. Backend API at **http://localhost:8000/docs*
 
 > The app runs without API keys — AI explanations fall back to deterministic scoring and recommendations still work.
 
+### Docker deployment
+
+Run the full local stack:
+
+```bash
+docker compose up --build
+```
+
+Run it in the background:
+
+```bash
+docker compose up --build -d
+```
+
+Check service status:
+
+```bash
+docker compose ps
+```
+
+Health check:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Recommendation smoke test:
+
+```bash
+curl -X POST http://localhost:8000/recommend/session \
+  -H "Content-Type: application/json" \
+  -d '{"preferences":{"userA":{"vibe":"warm romantic date night","brainpower":"light","reality":"fictional","action":"low action","dealbreaker":"no horror"},"userB":{"vibe":"funny heartfelt adventure","brainpower":"medium","reality":"fictional","action":"some action","dealbreaker":"no gore"}},"batch_size":2}'
+```
+
+PowerShell smoke test:
+
+```powershell
+$body = @{
+  preferences = @{
+    userA = @{
+      vibe = "warm romantic date night"
+      brainpower = "light"
+      reality = "fictional"
+      action = "low action"
+      dealbreaker = "no horror"
+    }
+    userB = @{
+      vibe = "funny heartfelt adventure"
+      brainpower = "medium"
+      reality = "fictional"
+      action = "some action"
+      dealbreaker = "no gore"
+    }
+  }
+  batch_size = 2
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod -Uri "http://localhost:8000/recommend/session" -Method POST -ContentType "application/json" -Body $body
+```
+
+The backend Dockerfile binds Uvicorn to `0.0.0.0` and uses Railway's `PORT` variable with a local fallback to `8000`. The backend build context excludes `.env`, caches, virtualenvs, logs, tests, and compiled Python files through `backend/.dockerignore`.
+
+### Railway backend deployment
+
+Deploy the backend as a Railway service from this repository:
+
+1. Create a new Railway project from the GitHub repository.
+2. Set the service root directory to `backend`.
+3. Use Dockerfile deployment. Railway should detect `backend/Dockerfile`.
+4. Add a Railway PostgreSQL database, or set `DATABASE_URL` manually.
+5. Set the required environment variables listed below.
+6. Set the health check path to `/health`.
+7. Deploy and verify `https://<railway-backend-domain>/health`.
+8. Run the recommendation smoke test against the Railway backend URL.
+
+Required backend environment variables:
+
+| Variable | Required | Notes |
+|---|---|---|
+| `DATABASE_URL` | Yes | Railway PostgreSQL URL recommended. SQLite is fine only for local Docker smoke tests. |
+| `SECRET_KEY` | Yes | Use a long random value, for example `python -c "import secrets; print(secrets.token_hex(32))"`. |
+| `GEMINI_API_KEY` | No | Enables AI explanations. Without it, deterministic fallback still returns recommendations. |
+| `TMDB_API_KEY` | No | Used by poster-fetch tooling; existing poster URLs still work without it. |
+| `PORT` | Provided by Railway | Do not hardcode it. The Dockerfile uses `${PORT:-8000}`. |
+
+Frontend deployment:
+
+1. Deploy the frontend separately, for example to Vercel, Netlify, or another Railway service.
+2. Set `VITE_API_URL` to the public backend URL, for example `https://<railway-backend-domain>`.
+3. Rebuild the frontend after changing `VITE_API_URL`, because Vite embeds it at build time.
+
 ### Manual setup (no Docker)
 
 ```bash

@@ -20,10 +20,12 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.add_column("users", sa.Column("username", sa.String(), nullable=True))
     op.execute("UPDATE users SET username = 'user_' || id WHERE username IS NULL")
-    op.alter_column("users", "username", nullable=False)
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.alter_column("username", existing_type=sa.String(), nullable=False)
     op.create_index("ix_users_username", "users", ["username"], unique=True)
 
 
 def downgrade() -> None:
     op.drop_index("ix_users_username", table_name="users")
-    op.drop_column("users", "username")
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.drop_column("username")

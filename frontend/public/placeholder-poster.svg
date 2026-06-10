@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" width="200" height="300">
+  <rect width="200" height="300" fill="#0d1424"/>
+  <rect x="1" y="1" width="198" height="298" fill="none" stroke="#1e2d4a" stroke-width="1"/>
+
+  <!-- Film strip top -->
+  <rect x="0" y="0" width="200" height="24" fill="#080c1a"/>
+  <rect x="8"  y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="32" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="56" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="80" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="104" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="128" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="152" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="176" y="6" width="16" height="12" rx="2" fill="#1e2d4a"/>
+
+  <!-- Film strip bottom -->
+  <rect x="0" y="276" width="200" height="24" fill="#080c1a"/>
+  <rect x="8"  y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="32" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="56" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="80" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="104" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="128" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="152" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+  <rect x="176" y="282" width="16" height="12" rx="2" fill="#1e2d4a"/>
+
+  <!-- Camera icon -->
+  <g transform="translate(100,150)">
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#1e2d4a" stroke-width="2"/>
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#2d4060" stroke-width="2"/>
+    <circle cx="0" cy="0" r="6" fill="#2d4060"/>
+
+    <!-- Lens glare -->
+    <circle cx="-8" cy="-10" r="4" fill="none" stroke="#3d5070" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- Label -->
+  <text x="100" y="220" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#3d5070" letter-spacing="2">NO POSTER</text>
+</svg>

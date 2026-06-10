@@ -14,18 +14,13 @@ export default function Account() {
 
   if (!user) return null;
 
-  const joined = (() => {
-    try {
-      const users = JSON.parse(localStorage.getItem('fa_users')) || [];
-      const record = users.find(u => u.username === user.username);
-      if (record) {
-        return new Date(record.createdAt).toLocaleDateString('en-US', {
-          year: 'numeric', month: 'long', day: 'numeric',
-        });
-      }
-    } catch { }
-    return 'Unknown';
-  })();
+  // created_at comes from the backend's CurrentUserResponse schema.
+  // It is a datetime string like "2026-06-01T11:03:00".
+  const joined = user.created_at
+    ? new Date(user.created_at).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+      })
+    : 'Unknown';
 
   return (
     <main className="account-page">
@@ -58,19 +53,14 @@ export default function Account() {
         <section className="account-section">
           <h2 className="account-section-title">Manage Account</h2>
           <p className="account-section-desc">
-            Your data is stored locally in this browser. Clearing browser data will remove your account.
+            Your account and watchlist are stored on our server. Signing out
+            removes your session from this device only.
           </p>
           <div style={{ marginTop: '2vh', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <button
-              className="btn-ghost"
-              onClick={() => navigate('/settings')}
-            >
+            <button className="btn-ghost" onClick={() => navigate('/settings')}>
               ⚙️  Settings
             </button>
-            <button
-              className="btn-ghost btn-ghost--danger"
-              onClick={handleLogout}
-            >
+            <button className="btn-ghost btn-ghost--danger" onClick={handleLogout}>
               Sign Out
             </button>
           </div>

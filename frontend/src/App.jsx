@@ -15,7 +15,24 @@ import Settings from './pages/Settings.jsx';
 const SESSION_STORAGE_KEY = 'film_adviser_session_id';
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, isAuthLoading } = useAuth();
+
+  // Wait for JWT verification before deciding to redirect.
+  // Without this guard, the app redirects to /login on every hard refresh
+  // even when the user has a valid token, because isAuthLoading is true
+  // while the /auth/me request is in flight.
+  if (isAuthLoading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: 'calc(100vh - 64px)', color: 'var(--text-muted)',
+        fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase',
+      }}>
+        Loading…
+      </div>
+    );
+  }
+
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
@@ -40,10 +57,10 @@ function AppRoutes() {
     <>
       <Navbar likedCount={watchlistCount} />
       <Routes>
-        <Route path="/"          element={<Landing />} />
-        <Route path="/login"     element={<Login />} />
-        <Route path="/signup"    element={<Signup />} />
-        <Route path="/about"     element={<About />} />
+        <Route path="/"        element={<Landing />} />
+        <Route path="/login"   element={<Login />} />
+        <Route path="/signup"  element={<Signup />} />
+        <Route path="/about"   element={<About />} />
         <Route
           path="/match"
           element={

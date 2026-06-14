@@ -3,6 +3,7 @@
 **Team:** Turing Titans  
 **Course:** CS-AI-2026 — Building AI-Powered Applications  
 **University:** Kutaisi International University · Spring 2026
+**Deployed URL:** https://joyful-intuition-production-606c.up.railway.app 
 
 [![CI](https://github.com/buchqi/Ai_Powered_Apps_Turing_Titans/actions/workflows/ci.yml/badge.svg)](https://github.com/buchqi/Ai_Powered_Apps_Turing_Titans/actions/workflows/ci.yml)
 
